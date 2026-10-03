@@ -55,7 +55,7 @@ collections:
       - { name: live, label: Live site URL, widget: string, required: false }
       - { name: featured, label: Show in the home-page reel, widget: boolean, default: false }
       - { name: early, label: Early / student work (small list at the bottom), widget: boolean, default: false }
-      - { name: order, label: Sort order, widget: number, value_type: float, default: 99, hint: 'Lower numbers come first.' }
+      - { name: order, label: Fallback sort number, widget: number, value_type: float, default: 99, hint: 'Only used for projects not yet placed on the "Project order" page (Profile & About → Project order). Lower comes first.' }
       - { name: body, label: Case study, widget: markdown }
 
   # ─────────────────────────── Blog ───────────────────────────
@@ -118,6 +118,25 @@ collections:
             fields:
               - { name: k, label: Label, widget: string }
               - { name: v, label: Value, widget: string }
+
+      - name: project-order
+        label: Project order
+        file: src/data/content/project-order.json
+        format: json
+        fields:
+          - name: order
+            label: Projects, in the order shown on the site
+            label_singular: Project
+            hint: 'Drag the handles to reorder. Used on the Work page and the home-page reel (the reel only shows projects marked "Show in the home-page reel"). New projects you have not added here appear at the end.'
+            widget: list
+            field:
+              name: project
+              label: Project
+              widget: relation
+              collection: projects
+              value_field: '{{slug}}'
+              search_fields: [title]
+              display_fields: [title]
 
       - name: experience
         label: Work experience

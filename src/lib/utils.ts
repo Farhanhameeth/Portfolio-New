@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import projectOrder from '../data/content/project-order.json';
 
 export const formatDate = (d: Date, style: 'long' | 'short' = 'long') =>
   d.toLocaleDateString('en-GB', style === 'long' ? { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' } : { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' });
@@ -13,8 +14,15 @@ export async function getPosts() {
   );
 }
 
+/**
+ * Projects in the order set on the CMS "Project order" page (drag and drop).
+ * Projects missing from that list follow afterwards, sorted by their own `order` number,
+ * so a newly added project still shows up before anyone reorders it.
+ */
 export async function getProjects() {
-  return (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+  const rank = new Map(projectOrder.order.map((id, i) => [id, i]));
+  const pos = (p: CollectionEntry<'projects'>) => rank.get(p.id) ?? Infinity;
+  return (await getCollection('projects')).sort((a, b) => pos(a) - pos(b) || a.data.order - b.data.order);
 }
 
 export type Post = CollectionEntry<'blog'>;

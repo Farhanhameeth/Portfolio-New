@@ -40,6 +40,8 @@ Open **https://farhanhameeth.tech/admin** to add or edit projects, blog posts, w
 
 "Sign In with GitHub" needs an extra login server, so use the token option instead.
 
+**Reordering projects:** *Profile & About → Project order* lists every project; drag them into the order you want and publish. The Work page and the home-page reel follow it. A new project you haven't placed yet appears at the end.
+
 **Editing locally (optional):** run `npm run dev`, open `http://localhost:4321/admin`, and choose **Work with Local Repository** (Chrome or Edge). Changes are written straight to your local files; commit and push them yourself.
 
 The CMS is configured in `public/admin/config.yml`. Content lives in `src/content/` (projects, blog) and `src/data/content/*.json` (everything else). `src/data/site.ts` only adds types.
