@@ -9,8 +9,14 @@ interface Props {
   density?: number;
   class?: string;
   label?: string;
+  /**
+   * "silhouette": dots fill the dark areas of the image (good for text/shapes).
+   * "halftone": the image's own alpha is the mask and dot size follows brightness,
+   * rendered as a positive image in both themes (best for recognisable portraits).
+   */
+  mode?: 'silhouette' | 'halftone';
 }
-const { src, text, align = 'center', density = 1, class: cls, label = '' } = Astro.props;
+const { src, text, align = 'center', density = 1, class: cls, label = '', mode = 'silhouette' } = Astro.props;
 ---
 
 <div
@@ -20,6 +26,7 @@ const { src, text, align = 'center', density = 1, class: cls, label = '' } = Ast
   data-text={text}
   data-align={align}
   data-density={density}
+  data-mode={mode}
   role={label ? 'img' : undefined}
   aria-label={label || undefined}
   aria-hidden={label ? undefined : 'true'}
@@ -58,6 +65,9 @@ const { src, text, align = 'center', density = 1, class: cls, label = '' } = Ast
     const density = Number(root.dataset.density) || 1;
     const img = root.dataset.src ? await loadImage(root.dataset.src).catch(() => null) : null;
     const text = root.dataset.text;
+    const halftone = root.dataset.mode === 'halftone' && !!img;
+    // Halftone dots barely wobble so facial detail stays crisp.
+    const wobble = halftone ? 0.3 : 0.9;
 
     let W = 0, H = 0, dpr = 1;
     let N = 0;
@@ -77,55 +87,106 @@ const { src, text, align = 'center', density = 1, class: cls, label = '' } = Ast
       H = Math.max(1, Math.round(r.height * dpr));
       canvas.width = W; canvas.height = H;
 
-      const off = document.createElement('canvas');
-      off.width = W; off.height = H;
-      const o = off.getContext('2d', { willReadFrequently: true })!;
-      o.fillStyle = '#fff'; o.fillRect(0, 0, W, H);
-
-      if (img) {
-        const s = Math.min(W / img.width, H / img.height) * 0.98;
-        const w = img.width * s, h = img.height * s;
-        const x = align === 'left' ? 0 : align === 'right' ? W - w : (W - w) / 2;
-        o.drawImage(img, x, H - h, w, h);
-      } else if (text) {
-        let fs = H * 0.8;
-        o.font = `600 ${fs}px "Space Grotesk Variable", system-ui, sans-serif`;
-        const m = o.measureText(text).width;
-        if (m > W * 0.92) { fs *= (W * 0.92) / m; o.font = `600 ${fs}px "Space Grotesk Variable", system-ui, sans-serif`; }
-        o.fillStyle = '#000'; o.textAlign = 'center'; o.textBaseline = 'middle';
-        o.fillText(text, W / 2, H / 2);
-      }
-
-      const data = o.getImageData(0, 0, W, H).data;
-      // Pick a sampling gap that keeps the particle count sensible for the screen size.
-      const area = (W * H) / (dpr * dpr);
-      const target = (innerWidth < 700 ? 4500 : 11000) * density;
-      const gap = Math.max(3, Math.round(Math.sqrt((area * 0.45) / target) * dpr));
-
+      // Each point: x, y, tone (0..1), size (device px).
       const pts: number[] = [];
-      for (let y = 0; y < H; y += gap) {
-        for (let x = 0; x < W; x += gap) {
-          const jx = Math.min(W - 1, x + ((Math.random() * gap) | 0));
-          const jy = Math.min(H - 1, y + ((Math.random() * gap) | 0));
-          const i = (jy * W + jx) * 4;
-          const b = (data[i] * 0.3 + data[i + 1] * 0.59 + data[i + 2] * 0.11) / 255;
-          // Contrast curve: keeps hair/shadows dense and lets mid-tones (skin) breathe,
-          // so features stay readable instead of a uniform blob.
-          const d = Math.min(1, Math.max(0, (1 - b - 0.12) / 0.72));
-          if (d < 0.06 || Math.random() > Math.pow(d, 1.5) + 0.02) continue;
-          pts.push(jx, jy, d);
+
+      if (halftone && img) {
+        const sc = Math.min(W / img.width, H / img.height);
+        const w = img.width * sc, h = img.height * sc;
+        const x0 = align === 'left' ? 0 : align === 'right' ? W - w : (W - w) / 2;
+        const y0 = H - h;
+        const target = (innerWidth < 700 ? 7000 : 17000) * density;
+        const g = Math.max(2.2 * dpr, Math.sqrt((w * h) / target));
+        // Downscaling onto a tiny canvas averages each grid cell for free.
+        const cw = Math.ceil(w / g), ch = Math.ceil(h / g);
+        const tiny = document.createElement('canvas');
+        tiny.width = cw; tiny.height = ch;
+        const tc = tiny.getContext('2d', { willReadFrequently: true })!;
+        tc.imageSmoothingQuality = 'high';
+        tc.drawImage(img, 0, 0, cw, ch);
+        const px = tc.getImageData(0, 0, cw, ch).data;
+        // Histogram-equalise the subject (alpha mask only), so mid-tone skin spreads
+        // across the full range and eyes, brows and mouth separate from the cheeks.
+        const hist = new Float64Array(256);
+        let count = 0;
+        for (let i = 0; i < px.length; i += 4) {
+          if (px[i + 3] < 110) continue;
+          hist[Math.round(px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11)]++;
+          count++;
+        }
+        const cdf = new Float64Array(256);
+        for (let v = 0, acc = 0; v < 256; v++) { acc += hist[v]; cdf[v] = acc / Math.max(1, count); }
+        // On a dark page, bright skin must become bright dots (a positive image);
+        // on a light page the ink is dark, so darkness becomes dots.
+        const dark = document.documentElement.dataset.theme !== 'light';
+        for (let iy = 0; iy < ch; iy++) {
+          for (let ix = 0; ix < cw; ix++) {
+            const i = (iy * cw + ix) * 4;
+            if (px[i + 3] < 110) continue;
+            const raw = Math.round(px[i] * 0.3 + px[i + 1] * 0.59 + px[i + 2] * 0.11);
+            // Light page: dark ink on paper reads like a print, so equalise hard.
+            // Dark page: glowing dots exaggerate harsh shadows, so equalise gently
+            // and lift the mid-tones (skin) instead.
+            let tn = dark
+              ? Math.max(0, (Math.pow(cdf[raw] * 0.45 + (raw / 255) * 0.55, 0.62) - 0.3) / 0.7)
+              : 1 - (cdf[raw] * 0.8 + (raw / 255) * 0.2);
+            tn = Math.pow(Math.min(1, Math.max(0, (tn - 0.06) / 0.88)), 1.15);
+            // A faint floor keeps the outline of hair and suit visible.
+            tn = 0.08 + tn * 0.92;
+            const x = x0 + ix * g + g / 2 + (iy % 2 ? g / 2 : 0);
+            const y = y0 + iy * g + g / 2;
+            pts.push(x, y, tn, g * (0.22 + 0.88 * tn));
+          }
+        }
+      } else {
+        const off = document.createElement('canvas');
+        off.width = W; off.height = H;
+        const o = off.getContext('2d', { willReadFrequently: true })!;
+        o.fillStyle = '#fff'; o.fillRect(0, 0, W, H);
+
+        if (img) {
+          const sc = Math.min(W / img.width, H / img.height) * 0.98;
+          const w = img.width * sc, h = img.height * sc;
+          const x = align === 'left' ? 0 : align === 'right' ? W - w : (W - w) / 2;
+          o.drawImage(img, x, H - h, w, h);
+        } else if (text) {
+          let fs = H * 0.8;
+          o.font = `600 ${fs}px "Space Grotesk Variable", system-ui, sans-serif`;
+          const m = o.measureText(text).width;
+          if (m > W * 0.92) { fs *= (W * 0.92) / m; o.font = `600 ${fs}px "Space Grotesk Variable", system-ui, sans-serif`; }
+          o.fillStyle = '#000'; o.textAlign = 'center'; o.textBaseline = 'middle';
+          o.fillText(text, W / 2, H / 2);
+        }
+
+        const data = o.getImageData(0, 0, W, H).data;
+        // Pick a sampling gap that keeps the particle count sensible for the screen size.
+        const area = (W * H) / (dpr * dpr);
+        const target = (innerWidth < 700 ? 4500 : 11000) * density;
+        const gap = Math.max(3, Math.round(Math.sqrt((area * 0.45) / target) * dpr));
+
+        for (let y = 0; y < H; y += gap) {
+          for (let x = 0; x < W; x += gap) {
+            const jx = Math.min(W - 1, x + ((Math.random() * gap) | 0));
+            const jy = Math.min(H - 1, y + ((Math.random() * gap) | 0));
+            const i = (jy * W + jx) * 4;
+            const b = (data[i] * 0.3 + data[i + 1] * 0.59 + data[i + 2] * 0.11) / 255;
+            // Contrast curve: keeps shadows dense and lets mid-tones breathe.
+            const d = Math.min(1, Math.max(0, (1 - b - 0.12) / 0.72));
+            if (d < 0.06 || Math.random() > Math.pow(d, 1.5) + 0.02) continue;
+            pts.push(jx, jy, d, (0.7 + d * 1.5) * dpr);
+          }
         }
       }
 
       const prevN = N, ox = px, oy = py;
-      N = pts.length / 3;
+      N = pts.length / 4;
       hx = new Float32Array(N); hy = new Float32Array(N);
       px = new Float32Array(N); py = new Float32Array(N);
       vx = new Float32Array(N); vy = new Float32Array(N);
       sz = new Float32Array(N); dirx = new Float32Array(N); diry = new Float32Array(N); ph = new Float32Array(N);
       tone = new Uint8Array(N);
       for (let i = 0; i < N; i++) {
-        const x = pts[i * 3], y = pts[i * 3 + 1], d = pts[i * 3 + 2];
+        const x = pts[i * 4], y = pts[i * 4 + 1], d = pts[i * 4 + 2];
         hx[i] = x; hy[i] = y;
         if (i < prevN) { px[i] = ox[i]; py[i] = oy[i]; }
         else if (reduced) { px[i] = x; py[i] = y; }
@@ -134,24 +195,36 @@ const { src, text, align = 'center', density = 1, class: cls, label = '' } = Ast
           const a = Math.random() * Math.PI * 2, rr = Math.max(W, H) * (0.4 + Math.random() * 0.6);
           px[i] = W / 2 + Math.cos(a) * rr; py[i] = H / 2 + Math.sin(a) * rr;
         }
-        sz[i] = (0.7 + d * 1.5) * dpr;
+        sz[i] = pts[i * 4 + 3];
         const a = Math.random() * Math.PI * 2;
         dirx[i] = Math.cos(a); diry[i] = Math.sin(a) - 0.6;
         ph[i] = Math.random() * Math.PI * 2;
-        tone[i] = Math.random() < 0.05 ? 3 : d > 0.7 ? 2 : d > 0.4 ? 1 : 0;
+        tone[i] = Math.random() < (halftone ? 0.012 : 0.05) && d > 0.25 ? 3 : d > 0.66 ? 2 : d > 0.36 ? 1 : 0;
       }
     }
 
     function draw() {
       ctx.clearRect(0, 0, W, H);
-      const alphas = [0.35, 0.62, 0.95];
+      const alphas = halftone ? [0.6, 0.82, 1] : [0.35, 0.62, 0.95];
       for (let b = 0; b < 4; b++) {
         ctx.fillStyle = b === 3 ? accent : fg;
         ctx.globalAlpha = b === 3 ? 1 : alphas[b];
-        for (let i = 0; i < N; i++) {
-          if (tone[i] !== b) continue;
-          const s = sz[i];
-          ctx.fillRect(px[i] - s / 2, py[i] - s / 2, s, s);
+        if (halftone) {
+          // Round dots read as a print halftone; one path per bucket keeps it fast.
+          ctx.beginPath();
+          for (let i = 0; i < N; i++) {
+            if (tone[i] !== b) continue;
+            const r = sz[i] / 2;
+            ctx.moveTo(px[i] + r, py[i]);
+            ctx.arc(px[i], py[i], r, 0, Math.PI * 2);
+          }
+          ctx.fill();
+        } else {
+          for (let i = 0; i < N; i++) {
+            if (tone[i] !== b) continue;
+            const s = sz[i];
+            ctx.fillRect(px[i] - s / 2, py[i] - s / 2, s, s);
+          }
         }
       }
       ctx.globalAlpha = 1;
@@ -162,8 +235,8 @@ const { src, text, align = 'center', density = 1, class: cls, label = '' } = Ast
       const R = 110 * dpr, R2 = R * R;
       const spread = scatter * Math.max(W, H) * 0.7;
       for (let i = 0; i < N; i++) {
-        const tx = hx[i] + Math.sin(t * 1.3 + ph[i]) * 0.9 * dpr + dirx[i] * spread;
-        const ty = hy[i] + Math.cos(t * 1.1 + ph[i]) * 0.9 * dpr + diry[i] * spread;
+        const tx = hx[i] + Math.sin(t * 1.3 + ph[i]) * wobble * dpr + dirx[i] * spread;
+        const ty = hy[i] + Math.cos(t * 1.1 + ph[i]) * wobble * dpr + diry[i] * spread;
         let ax = (tx - px[i]) * 0.035, ay = (ty - py[i]) * 0.035;
         if (mouse.active) {
           const dx = px[i] - mouse.x, dy = py[i] - mouse.y;
@@ -200,7 +273,8 @@ const { src, text, align = 'center', density = 1, class: cls, label = '' } = Ast
       const r = root.getBoundingClientRect();
       scatter = Math.min(1, Math.max(0, -r.top / (r.height * 0.9))) ** 1.6;
     };
-    const onTheme = () => { fg = cssVar('--fg'); accent = cssVar('--accent'); if (reduced) draw(); };
+    // Halftone tones depend on the theme, so re-sample; dots glide to their new spots.
+    const onTheme = () => { fg = cssVar('--fg'); accent = cssVar('--accent'); if (halftone) sample(); if (reduced) draw(); };
     let rt = 0;
     const onResize = () => { clearTimeout(rt); rt = window.setTimeout(() => { sample(); if (reduced) draw(); }, 150); };
 

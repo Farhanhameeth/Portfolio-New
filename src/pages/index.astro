@@ -30,7 +30,7 @@ const numbers = [
   <!-- ───────── Hero ───────── -->
   <section class="hero">
     <div class="hero__field">
-      <ParticleField src="/images/portrait-side.jpg" align="right" label="Portrait of Farhan Hameeth drawn in particles" />
+      <ParticleField src="/images/portrait-front.webp" mode="halftone" align="right" label="Portrait of Farhan Hameeth drawn in particles" />
     </div>
 
     <div class="wrap hero__inner">
@@ -182,7 +182,7 @@ const numbers = [
 <style>
   /* Hero */
   .hero { position: relative; min-height: 100svh; display: flex; overflow: hidden; }
-  .hero__field { position: absolute; inset: 90px 3% 150px 40%; }
+  .hero__field { position: absolute; inset: 90px calc(var(--gutter) + 36px) 172px 44%; }
   .hero__inner { position: relative; z-index: 1; display: flex; flex-direction: column; justify-content: space-between; padding-top: 110px; padding-bottom: 40px; min-height: 100svh; pointer-events: none; }
   .hero__inner a, .hero__inner button { pointer-events: auto; }
   .hero__top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
