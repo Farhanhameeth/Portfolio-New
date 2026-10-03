@@ -3,7 +3,7 @@ import Base from '../layouts/Base.astro';
 import ParticleField from '../components/ParticleField.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import Experience from '../components/Experience.astro';
-import { site, heroVerbs, stack, facts } from '../data/site';
+import { site, heroVerbs, stack, facts, certifications, mlSpecialization } from '../data/site';
 import { getPosts, getProjects, formatDate, readingTime } from '../lib/utils';
 
 const projects = await getProjects();
@@ -21,7 +21,7 @@ const professional = projects.filter((p) => p.data.kind === 'Professional').leng
 const numbers = [
   { n: monthsAtIQ, suffix: '+', label: 'Months shipping production software at Innovation Quotient' },
   { n: professional, suffix: '', label: 'Professional platforms — health-tech, streaming, logistics, kids\' events & HR' },
-  { n: 12, suffix: '', label: 'Certificates — Stanford & DeepLearning.AI, UoM, HackerRank' },
+  { n: certifications.length + mlSpecialization.courses.length, suffix: '', label: 'Certificates — Stanford & DeepLearning.AI, UoM, HackerRank' },
   { n: 3, suffix: '', label: 'Languages spoken — English, Sinhala, Malay' },
 ];
 ---

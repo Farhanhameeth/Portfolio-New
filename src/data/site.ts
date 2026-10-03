@@ -135,8 +135,21 @@ export const education = [
   },
 ];
 
+// Andrew Ng's Machine Learning Specialization (DeepLearning.AI & Stanford, on Coursera):
+// all three courses, each with its own verifiable certificate.
+export const mlSpecialization = {
+  name: 'Machine Learning Specialization',
+  issuer: 'DeepLearning.AI & Stanford University',
+  instructor: 'Andrew Ng',
+  note: 'Supervised and unsupervised learning, neural networks, decision trees, recommender systems and reinforcement learning, built in Python with TensorFlow and scikit-learn.',
+  courses: [
+    { name: 'Supervised Machine Learning: Regression and Classification', date: 'Dec 2025', url: 'https://coursera.org/verify/2H4LHQEY265B' },
+    { name: 'Advanced Learning Algorithms', date: 'Mar 2026', url: 'https://coursera.org/verify/IHY4LIMLK7VU' },
+    { name: 'Unsupervised Learning, Recommenders, Reinforcement Learning', date: 'Mar 2026', url: 'https://coursera.org/verify/S7K44IZ5AKTH' },
+  ],
+};
+
 export const certifications = [
-  { name: 'Machine Learning Specialization', issuer: 'DeepLearning.AI & Stanford', note: 'Coursera · Andrew Ng — supervised learning, advanced learning algorithms (neural networks, decision trees) and unsupervised learning with Python, TensorFlow and scikit-learn' },
   { name: 'Python for Beginners', issuer: 'University of Moratuwa' },
   { name: 'Python Programming', issuer: 'University of Moratuwa' },
   { name: 'Web Design for Beginners', issuer: 'University of Moratuwa' },
@@ -177,6 +190,7 @@ export const facts = [
   { k: 'Currently', v: 'Associate Software Engineer @ Innovation Quotient' },
   { k: 'Studying', v: 'Final-year BSc (Hons) CS — IIT / Westminster' },
   { k: 'Researching', v: 'HelioGuard — explainable solar-flare forecasting' },
+  { k: 'Machine learning', v: "Andrew Ng's ML Specialization — all 3 courses" },
   { k: 'Speaks', v: 'English, Sinhala & Malay' },
   { k: 'Based in', v: 'Colombo, Sri Lanka (UTC+5:30)' },
 ];
