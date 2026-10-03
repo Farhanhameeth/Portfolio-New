@@ -1,4 +1,4 @@
-# farhanhameeth.me
+# farhanhameeth.tech
 
 Personal site of **Farhan Hameeth**, a full-stack developer and CS undergraduate at IIT, Colombo.
 
@@ -95,7 +95,7 @@ PUBLIC_FORM_ENDPOINT=https://formspree.io/f/xxxxxx npm run build
 
 ## Deploy
 
-**GitHub Pages:** `.github/workflows/deploy.yml` builds and deploys on every push to `main`. Turn it on in the repo under *Settings → Pages → Source: GitHub Actions*. The site expects to be served from the domain root, so add the custom domain `farhanhameeth.me` in the same settings page.
+**GitHub Pages:** `.github/workflows/deploy.yml` builds and deploys on every push to `main`. Turn it on in the repo under *Settings → Pages → Source: GitHub Actions*. The site expects to be served from the domain root, so add the custom domain `farhanhameeth.tech` in the same settings page.
 
 **Vercel / Netlify / Cloudflare Pages:** import the repo. Use build command `npm run build` and output directory `dist`.
 
