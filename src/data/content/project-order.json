@@ -1,13 +1,13 @@
 {
   "order": [
     "helioguard",
+    "hdo-website",
     "kids-events-platform",
     "healthcare-platform",
     "ott-streaming",
     "supply-chain",
     "hr-platform",
     "wedcraft",
-    "hdo-website",
     "meddiary",
     "inventory-management",
     "library-management"
