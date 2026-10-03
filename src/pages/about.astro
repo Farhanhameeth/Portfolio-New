@@ -4,12 +4,12 @@ import SkillPlayground from '../components/SkillPlayground.astro';
 import Experience from '../components/Experience.astro';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { site, timeline, education, certifications, languages, strengths, skills, concepts } from '../data/site';
+import { site, timeline, education, certifications, mlSpecialization as ml, languages, strengths, skills, concepts } from '../data/site';
 
 const uom = certifications.filter((c) => c.issuer === 'University of Moratuwa');
 const hasCV = existsSync(join(process.cwd(), 'public', site.cvPath));
 const hr = certifications.filter((c) => c.issuer === 'HackerRank');
-const ml = certifications.find((c) => c.issuer.includes('Stanford'))!;
+const certCount = certifications.length + ml.courses.length;
 ---
 
 <Base title="About" description="The story so far — Farhan Hameeth, Associate Software Engineer at Innovation Quotient and final-year Computer Science undergraduate at IIT, Colombo.">
@@ -122,13 +122,23 @@ const ml = certifications.find((c) => c.issuer.includes('Stanford'))!;
     <div class="wrap">
       <div class="sec-head">
         <p class="label">( 05 ) — Certifications</p>
-        <h2 class="h2"><span data-count={certifications.length}>0</span> certificates <span class="serif italic">& counting.</span></h2>
+        <h2 class="h2"><span data-count={certCount}>0</span> certificates <span class="serif italic">& counting.</span></h2>
       </div>
       <article class="certs__hero" data-reveal data-tilt="3">
-        <div>
-          <p class="mono muted">Featured · {ml.issuer}</p>
+        <div class="certs__hero-main">
+          <p class="mono muted">Featured · {ml.issuer} · Coursera</p>
           <h3 class="h3">{ml.name}</h3>
-          <p class="muted">{ml.note}</p>
+          <p class="muted">Taught by {ml.instructor}. {ml.note}</p>
+          <ol class="certs__courses">
+            {ml.courses.map((c, i) => (
+              <li>
+                <span class="mono">0{i + 1}</span>
+                <span class="certs__course">{c.name}</span>
+                <span class="mono muted">{c.date}</span>
+                <a href={c.url} target="_blank" rel="noopener" class="certs__verify mono">Verify ↗</a>
+              </li>
+            ))}
+          </ol>
         </div>
         <span class="certs__seal" aria-hidden="true">ML</span>
       </article>
@@ -233,7 +243,14 @@ const ml = certifications.find((c) => c.issuer.includes('Stanford'))!;
 
   /* Certs */
   .certs__hero { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: clamp(1.4rem, 3vw, 2.4rem); margin-bottom: 1.5rem; border-radius: var(--radius); background: var(--accent); color: var(--accent-ink); transform: rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform 0.5s var(--ease), opacity 1s var(--ease); }
-  .certs__hero > div { display: grid; gap: 0.7rem; max-width: 70ch; }
+  .certs__hero > div { display: grid; gap: 0.7rem; max-width: 80ch; }
+  .certs__courses { list-style: none; padding: 0; margin: 0.6rem 0 0; display: grid; }
+  .certs__courses li { display: grid; grid-template-columns: 2.2rem 1fr auto auto; gap: 1rem; align-items: baseline; padding: 0.75rem 0; border-top: 1px solid color-mix(in srgb, var(--accent-ink) 22%, transparent); }
+  .certs__courses .mono { font-size: 0.7rem; }
+  .certs__course { font-weight: 500; }
+  .certs__verify { padding: 0.3rem 0.7rem; border-radius: 999px; border: 1px solid color-mix(in srgb, var(--accent-ink) 40%, transparent); white-space: nowrap; transition: background 0.3s, color 0.3s; }
+  .certs__verify:hover { background: var(--accent-ink); color: var(--accent); }
+  @media (max-width: 700px) { .certs__courses li { grid-template-columns: 1.8rem 1fr; } .certs__courses li > .muted, .certs__verify { grid-column: 2; justify-self: start; } }
   .certs__hero .muted { color: color-mix(in srgb, var(--accent-ink) 70%, transparent); }
   .certs__seal { flex: none; width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; border: 1.5px dashed currentColor; font-family: var(--f-serif); font-style: italic; font-size: 2.6rem; animation: spin 30s linear infinite; }
   @media (max-width: 700px) { .certs__seal { display: none; } }
