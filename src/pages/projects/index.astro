@@ -19,7 +19,7 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
         <span class="split-line" data-split style="--d:.1s"><span><span class="serif italic">projects</span><sup class="accent mono">({projects.length})</sup></span></span>
       </h1>
       <div class="ph__bar" data-reveal style="--d:.25s">
-        <p class="muted ph__lead">Production platforms from Innovation Quotient, plus the projects that got me here. Filter by tech:</p>
+        <p class="muted ph__lead">AI research, production platforms from Innovation Quotient, freelance work — and the projects that got me here. Filter by tech:</p>
         <div class="filters" role="toolbar" aria-label="Filter projects by technology" data-filters>
           {tech.map((t, i) => (
             <button class:list={['filter', { 'is-on': i === 0 }]} data-filter={t} aria-pressed={i === 0 ? 'true' : 'false'}>

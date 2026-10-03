@@ -12,7 +12,7 @@ const projects = defineCollection({
     role: z.string(),
     /** Company the work was done at, if any */
     company: z.string().optional(),
-    kind: z.enum(['Professional', 'Team', 'Solo', 'Academic']),
+    kind: z.enum(['Professional', 'Freelance', 'Research', 'Team', 'Solo', 'Academic']),
     status: z.enum(['Shipped', 'In progress', 'Archived']).optional(),
     /** Early/student work is shown in a separate, smaller section */
     early: z.boolean().default(false),

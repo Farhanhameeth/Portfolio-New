@@ -13,7 +13,7 @@ highlights:
 color: '#d29922'
 cover: /images/projects/library.webp
 repo: https://github.com/Farhanhameeth/Library-Management-System
-order: 7
+order: 8
 early: true
 status: Archived
 ---
