@@ -28,9 +28,21 @@ npm run build     # outputs to dist/
 npm run preview   # serve the build
 ```
 
-## Update your details
+## Edit content with the CMS (no code)
 
-Personal information (bio facts, timeline, skills, grades, certifications, socials) lives in **`src/data/site.ts`**. Edit it there and the change shows up everywhere on the site.
+Open **https://farhanhameeth.tech/admin** to add or edit projects, blog posts, work experience, education, certificates, skills, the timeline and your profile, all through forms. Saving commits to `main`, and the deploy publishes it in about a minute.
+
+**First sign-in (one time):**
+1. On GitHub, create a fine-grained personal access token: *Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token*.
+   - **Repository access:** Only select repositories → `Farhanhameeth/Portfolio-New`
+   - **Permissions → Contents:** Read and write
+2. On `/admin`, click **Sign In Using Access Token** and paste it. The browser remembers it.
+
+"Sign In with GitHub" needs an extra login server, so use the token option instead.
+
+**Editing locally (optional):** run `npm run dev`, open `http://localhost:4321/admin`, and choose **Work with Local Repository** (Chrome or Edge). Changes are written straight to your local files; commit and push them yourself.
+
+The CMS is configured in `public/admin/config.yml`. Content lives in `src/content/` (projects, blog) and `src/data/content/*.json` (everything else). `src/data/site.ts` only adds types.
 
 **CV button:** put your CV at `public/cv.pdf` and a "Download CV" button appears on the About page.
 

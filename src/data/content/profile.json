@@ -1,0 +1,70 @@
+{
+  "name": "Farhan Hameeth",
+  "first": "Farhan",
+  "last": "Hameeth",
+  "role": "Associate Software Engineer",
+  "company": "Innovation Quotient",
+  "title": "Farhan Hameeth — Software Engineer",
+  "description": "Farhan Hameeth is an Associate Software Engineer at Innovation Quotient in Colombo, Sri Lanka, building full-stack products with .NET Core, React, Next.js and Azure — and a final-year Computer Science undergraduate at IIT (University of Westminster).",
+  "location": "Colombo, Sri Lanka",
+  "timezone": "Asia/Colombo",
+  "email": "farhanhameeth1@gmail.com",
+  "availability": "Open to interesting projects & collaborations",
+  "cvPath": "/cv.pdf",
+  "socials": [
+    {
+      "label": "GitHub",
+      "handle": "@Farhanhameeth",
+      "href": "https://github.com/Farhanhameeth"
+    },
+    {
+      "label": "LinkedIn",
+      "handle": "in/farhan-hameeth",
+      "href": "https://www.linkedin.com/in/farhan-hameeth/"
+    },
+    {
+      "label": "Instagram",
+      "handle": "@farhanhameeth",
+      "href": "https://www.instagram.com/farhanhameeth/"
+    },
+    {
+      "label": "Facebook",
+      "handle": "farhan.hameeth",
+      "href": "https://www.facebook.com/farhan.hameeth"
+    }
+  ],
+  "heroVerbs": [
+    "scalable .NET Core APIs",
+    "React & Next.js front-ends",
+    "health-tech platforms",
+    "streaming experiences",
+    "cloud-ready systems on Azure",
+    "explainable ML systems"
+  ],
+  "facts": [
+    {
+      "k": "Currently",
+      "v": "Associate Software Engineer @ Innovation Quotient"
+    },
+    {
+      "k": "Studying",
+      "v": "Final-year BSc (Hons) CS — IIT / Westminster"
+    },
+    {
+      "k": "Researching",
+      "v": "HelioGuard — explainable solar-flare forecasting"
+    },
+    {
+      "k": "Machine learning",
+      "v": "Andrew Ng's ML Specialization — all 3 courses"
+    },
+    {
+      "k": "Speaks",
+      "v": "English, Sinhala & Malay"
+    },
+    {
+      "k": "Based in",
+      "v": "Colombo, Sri Lanka (UTC+5:30)"
+    }
+  ]
+}

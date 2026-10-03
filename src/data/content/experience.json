@@ -1,0 +1,31 @@
+{
+  "jobs": [
+    {
+      "company": "Innovation Quotient (Pvt) Ltd",
+      "place": "Colombo, Sri Lanka",
+      "roles": [
+        {
+          "title": "Associate Software Engineer",
+          "period": "Jan 2026 — Present",
+          "points": [
+            "Built a kids' events mobile app in Flutter for iOS and Android, plus its React admin panel and CMS.",
+            "Engineer scalable, maintainable and testable solutions guided by clean architecture and clean-code practices.",
+            "Deploy, monitor and optimise enterprise applications on Azure, AWS and Orel Cloud.",
+            "Design RESTful APIs, database schemas and modular components; contribute to system-design discussions.",
+            "Review code, debug, refactor and troubleshoot production issues with performance optimisations.",
+            "Work across CI/CD pipelines, version control and agile delivery with cross-functional teams."
+          ]
+        },
+        {
+          "title": "Software Engineer Intern",
+          "period": "May 2025 — Dec 2025",
+          "points": [
+            "Helped design and implement secure APIs and database structures for client projects.",
+            "Built front-end modules for an HR information system (HRIS) in React and Redux.",
+            "Broke complex problems into manageable tasks in an agile team; took part in code reviews and daily stand-ups."
+          ]
+        }
+      ]
+    }
+  ]
+}

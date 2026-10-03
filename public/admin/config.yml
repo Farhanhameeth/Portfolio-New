@@ -1,0 +1,235 @@
+# Content manager for farhanhameeth.tech — open /admin on the live site.
+# Saving commits to `main`, which triggers the GitHub Pages deploy (live in ~1 minute).
+# Field names must match src/content.config.ts (projects, blog) and src/data/site.ts (everything else).
+
+backend:
+  name: github
+  repo: Farhanhameeth/Portfolio-New
+  branch: main
+  commit_messages:
+    create: 'Add {{collection}} "{{slug}}"'
+    update: 'Update {{collection}} "{{slug}}"'
+    delete: 'Delete {{collection}} "{{slug}}"'
+    uploadMedia: 'Upload "{{path}}"'
+    deleteMedia: 'Delete "{{path}}"'
+
+# Leave blank optional fields out of the saved files instead of writing "".
+output:
+  omit_empty_optional_fields: true
+
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+site_url: https://farhanhameeth.tech
+display_url: https://farhanhameeth.tech
+logo_url: /favicon.svg
+
+collections:
+  # ───────────────────────── Projects ─────────────────────────
+  - name: projects
+    label: Projects
+    label_singular: Project
+    folder: src/content/projects
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: projects/{{slug}}
+    sortable_fields: [order, title, year]
+    summary: '{{order}} · {{title}} ({{year}})'
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: tagline, label: Tagline, widget: string, hint: 'Short one-liner under the title.' }
+      - { name: summary, label: Summary, widget: text, hint: 'Two sentences, shown on cards and in search results.' }
+      - { name: year, label: Year, widget: string, hint: 'e.g. 2026' }
+      - { name: role, label: Your role, widget: string }
+      - { name: company, label: Company, widget: string, required: false, hint: 'Leave empty for personal, freelance or academic work.' }
+      - { name: kind, label: Type, widget: select, options: [Professional, Freelance, Research, Team, Solo, Academic] }
+      - { name: status, label: Status, widget: select, options: [Shipped, In progress, Archived], required: false }
+      - { name: stack, label: Tech stack, widget: list, field: { name: item, label: Technology, widget: string } }
+      - { name: highlights, label: Highlights, widget: list, required: false, field: { name: item, label: Highlight, widget: string } }
+      - { name: color, label: Accent colour, widget: color, default: '#ff5b2e' }
+      - { name: cover, label: Cover screenshot, widget: image, required: false, hint: 'Optional. Without one, a generated poster in the accent colour is used.' }
+      - { name: mark, label: Poster letters, widget: string, required: false, hint: 'Optional letters for the generated poster, e.g. "HRIS".' }
+      - { name: repo, label: Source code URL, widget: string, required: false }
+      - { name: live, label: Live site URL, widget: string, required: false }
+      - { name: featured, label: Show in the home-page reel, widget: boolean, default: false }
+      - { name: early, label: Early / student work (small list at the bottom), widget: boolean, default: false }
+      - { name: order, label: Sort order, widget: number, value_type: float, default: 99, hint: 'Lower numbers come first.' }
+      - { name: body, label: Case study, widget: markdown }
+
+  # ─────────────────────────── Blog ───────────────────────────
+  - name: blog
+    label: Blog posts
+    label_singular: Blog post
+    folder: src/content/blog
+    extension: md
+    format: frontmatter
+    create: true
+    slug: '{{slug}}'
+    preview_path: blog/{{slug}}
+    sortable_fields: [date, title]
+    summary: '{{title}} — {{date}}'
+    fields:
+      - { name: title, label: Title, widget: string }
+      - { name: description, label: Description, widget: text, hint: 'One sentence that sums the post up.' }
+      - { name: date, label: Published, widget: datetime, time_format: false, date_format: YYYY-MM-DD, format: YYYY-MM-DD }
+      - { name: updated, label: Updated, widget: datetime, time_format: false, date_format: YYYY-MM-DD, format: YYYY-MM-DD, required: false }
+      - { name: tags, label: Tags, widget: list, required: false, field: { name: tag, label: Tag, widget: string } }
+      - { name: cover, label: Cover image, widget: image, required: false }
+      - { name: draft, label: Draft (hidden on the live site), widget: boolean, default: false }
+      - { name: body, label: Post, widget: markdown }
+
+  # ──────────────────────── Site content ──────────────────────
+  - name: settings
+    label: Profile & About
+    editor: { preview: false }
+    files:
+      - name: profile
+        label: Profile, socials & hero
+        file: src/data/content/profile.json
+        format: json
+        fields:
+          - { name: name, label: Full name, widget: string }
+          - { name: first, label: First name, widget: string }
+          - { name: last, label: Last name, widget: string }
+          - { name: role, label: Job title, widget: string }
+          - { name: company, label: Company, widget: string }
+          - { name: title, label: Browser tab title, widget: string }
+          - { name: description, label: Search-engine description, widget: text }
+          - { name: location, label: Location, widget: string }
+          - { name: timezone, label: Time zone (for the live clock), widget: string, hint: 'IANA name, e.g. Asia/Colombo' }
+          - { name: email, label: Email, widget: string }
+          - { name: availability, label: Availability badge, widget: string }
+          - { name: cvPath, label: CV path, widget: string, hint: 'The CV lives at public/cv.pdf; leave as /cv.pdf.' }
+          - name: socials
+            label: Social links
+            widget: list
+            summary: '{{label}}'
+            fields:
+              - { name: label, label: Name, widget: string }
+              - { name: handle, label: Handle, widget: string }
+              - { name: href, label: URL, widget: string }
+          - { name: heroVerbs, label: '"I build …" phrases (home hero)', widget: list, field: { name: item, label: Phrase, widget: string } }
+          - name: facts
+            label: Quick facts (home intro)
+            widget: list
+            summary: '{{k}}: {{v}}'
+            fields:
+              - { name: k, label: Label, widget: string }
+              - { name: v, label: Value, widget: string }
+
+      - name: experience
+        label: Work experience
+        file: src/data/content/experience.json
+        format: json
+        fields:
+          - name: jobs
+            label: Companies
+            label_singular: Company
+            widget: list
+            summary: '{{company}}'
+            hint: 'Newest first.'
+            fields:
+              - { name: company, label: Company, widget: string }
+              - { name: place, label: Location, widget: string }
+              - name: roles
+                label: Roles at this company
+                label_singular: Role
+                widget: list
+                summary: '{{title}} — {{period}}'
+                hint: 'Newest first. The first role is shown as current.'
+                fields:
+                  - { name: title, label: Job title, widget: string }
+                  - { name: period, label: Period, widget: string, hint: 'e.g. Jan 2026 — Present' }
+                  - { name: points, label: What you did, widget: list, field: { name: item, label: Point, widget: string } }
+
+      - name: education
+        label: Education
+        file: src/data/content/education.json
+        format: json
+        fields:
+          - name: items
+            label: Education
+            label_singular: Qualification
+            widget: list
+            summary: '{{title}} — {{period}}'
+            fields:
+              - { name: title, label: Qualification, widget: string }
+              - { name: place, label: Institution, widget: string }
+              - { name: note, label: Note, widget: string, required: false }
+              - { name: period, label: Period, widget: string }
+
+      - name: certifications
+        label: Certifications
+        file: src/data/content/certifications.json
+        format: json
+        fields:
+          - name: mlSpecialization
+            label: Featured specialisation (orange card)
+            widget: object
+            fields:
+              - { name: name, label: Name, widget: string }
+              - { name: issuer, label: Issuer, widget: string }
+              - { name: instructor, label: Instructor, widget: string }
+              - { name: note, label: Description, widget: text }
+              - name: courses
+                label: Courses
+                label_singular: Course
+                widget: list
+                summary: '{{name}} — {{date}}'
+                fields:
+                  - { name: name, label: Course, widget: string }
+                  - { name: date, label: Completed, widget: string, hint: 'e.g. Mar 2026' }
+                  - { name: url, label: Verification URL, widget: string }
+          - name: items
+            label: Other certificates
+            label_singular: Certificate
+            widget: list
+            summary: '{{name}} — {{issuer}}'
+            hint: 'Grouped on the About page by issuer ("University of Moratuwa" and "HackerRank").'
+            fields:
+              - { name: name, label: Certificate, widget: string }
+              - { name: issuer, label: Issuer, widget: string }
+              - { name: date, label: Date, widget: string, required: false }
+              - { name: url, label: Verification URL, widget: string, required: false }
+
+      - name: skills
+        label: Skills & stack
+        file: src/data/content/skills.json
+        format: json
+        fields:
+          - { name: stack, label: Scrolling tech marquee (home), widget: list, field: { name: item, label: Technology, widget: string } }
+          - name: skills
+            label: Skills playground (About)
+            label_singular: Skill
+            widget: list
+            summary: '{{name}} — {{group}}'
+            fields:
+              - { name: name, label: Skill, widget: string }
+              - { name: group, label: Group, widget: select, options: [Backend, Frontend, Data & AI, Cloud & Tools] }
+          - { name: concepts, label: '"Also fluent in" concepts', widget: list, field: { name: item, label: Concept, widget: string } }
+
+      - name: story
+        label: Timeline, languages & strengths
+        file: src/data/content/story.json
+        format: json
+        fields:
+          - name: timeline
+            label: Story timeline (About)
+            label_singular: Milestone
+            widget: list
+            summary: '{{year}} — {{title}}'
+            hint: 'Oldest first.'
+            fields:
+              - { name: year, label: Year, widget: string }
+              - { name: title, label: Title, widget: string }
+              - { name: body, label: Text, widget: text }
+          - name: languages
+            label: Languages
+            widget: list
+            summary: '{{name}}'
+            fields:
+              - { name: name, label: Language, widget: string }
+              - { name: native, label: In its own script, widget: string }
+          - { name: strengths, label: Strengths, widget: list, field: { name: item, label: Strength, widget: string } }

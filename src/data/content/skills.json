@@ -1,0 +1,145 @@
+{
+  "stack": [
+    "C#",
+    ".NET Core",
+    "ASP.NET Web API",
+    "Entity Framework",
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Node.js",
+    "Azure",
+    "AWS",
+    "MSSQL",
+    "PostgreSQL",
+    "Strapi",
+    "Tailwind CSS",
+    "Python",
+    "TensorFlow",
+    "Java",
+    "Spring Boot"
+  ],
+  "skills": [
+    {
+      "name": "C#",
+      "group": "Backend"
+    },
+    {
+      "name": ".NET Core",
+      "group": "Backend"
+    },
+    {
+      "name": "ASP.NET Web API",
+      "group": "Backend"
+    },
+    {
+      "name": "EF Core",
+      "group": "Backend"
+    },
+    {
+      "name": "Node.js",
+      "group": "Backend"
+    },
+    {
+      "name": "Spring Boot",
+      "group": "Backend"
+    },
+    {
+      "name": "Java",
+      "group": "Backend"
+    },
+    {
+      "name": "React",
+      "group": "Frontend"
+    },
+    {
+      "name": "Next.js",
+      "group": "Frontend"
+    },
+    {
+      "name": "TypeScript",
+      "group": "Frontend"
+    },
+    {
+      "name": "JavaScript",
+      "group": "Frontend"
+    },
+    {
+      "name": "Tailwind",
+      "group": "Frontend"
+    },
+    {
+      "name": "Flutter",
+      "group": "Frontend"
+    },
+    {
+      "name": "PyTorch",
+      "group": "Data & AI"
+    },
+    {
+      "name": "SHAP",
+      "group": "Data & AI"
+    },
+    {
+      "name": "FastAPI",
+      "group": "Backend"
+    },
+    {
+      "name": "MSSQL",
+      "group": "Data & AI"
+    },
+    {
+      "name": "PostgreSQL",
+      "group": "Data & AI"
+    },
+    {
+      "name": "MySQL",
+      "group": "Data & AI"
+    },
+    {
+      "name": "Python",
+      "group": "Data & AI"
+    },
+    {
+      "name": "TensorFlow",
+      "group": "Data & AI"
+    },
+    {
+      "name": "scikit-learn",
+      "group": "Data & AI"
+    },
+    {
+      "name": "Azure",
+      "group": "Cloud & Tools"
+    },
+    {
+      "name": "AWS",
+      "group": "Cloud & Tools"
+    },
+    {
+      "name": "Azure DevOps",
+      "group": "Cloud & Tools"
+    },
+    {
+      "name": "CI/CD",
+      "group": "Cloud & Tools"
+    },
+    {
+      "name": "Strapi",
+      "group": "Cloud & Tools"
+    },
+    {
+      "name": "Git",
+      "group": "Cloud & Tools"
+    }
+  ],
+  "concepts": [
+    "Clean Architecture",
+    "Domain-Driven Design",
+    "RESTful APIs",
+    "System design",
+    "Agile",
+    "Explainable AI (XAI)",
+    "Imbalanced learning"
+  ]
+}

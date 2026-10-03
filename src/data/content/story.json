@@ -1,0 +1,67 @@
+{
+  "timeline": [
+    {
+      "year": "2009",
+      "title": "First day at Asian Grammar School",
+      "body": "Nine years in Gothatuwa that ended with O/Ls — and a growing habit of taking things apart to see how they work."
+    },
+    {
+      "year": "2018",
+      "title": "Joined the Leo Club",
+      "body": "Member of the Leo Club of Asian Grammar School — first taste of organising people and projects for the community."
+    },
+    {
+      "year": "2019",
+      "title": "St. Benedict's College",
+      "body": "A/Ls in the Physical Science stream: maths, physics and a lot of problem sets."
+    },
+    {
+      "year": "2020",
+      "title": "Leo Club of Kottawa Central Golden City",
+      "body": "Continued community service with the Omega club through 2021, sharpening leadership and teamwork."
+    },
+    {
+      "year": "2023",
+      "title": "Started Computer Science at IIT",
+      "body": "BSc (Hons) at the Informatics Institute of Technology, affiliated with the University of Westminster."
+    },
+    {
+      "year": "2024",
+      "title": "Shipped my first systems",
+      "body": "Library and Inventory Management Systems in Java, JavaFX and MySQL — where OOP and layered architecture finally clicked. Six University of Moratuwa certificates and five HackerRank badges along the way."
+    },
+    {
+      "year": "2025",
+      "title": "Software Engineer Intern at Innovation Quotient",
+      "body": "Joined IQ in May. Secure APIs, database design and React front-ends for client projects — including an HR information system."
+    },
+    {
+      "year": "2026",
+      "title": "Associate Software Engineer",
+      "body": "Promoted in January. Now building health-tech, OTT streaming, logistics and children's-events platforms with .NET Core, React, Next.js, Flutter and Azure — while building HelioGuard, my final-year research project on explainable solar-flare forecasting. Also revamping the HDO website as a freelance project."
+    }
+  ],
+  "languages": [
+    {
+      "name": "English",
+      "native": "English"
+    },
+    {
+      "name": "Sinhala",
+      "native": "සිංහල"
+    },
+    {
+      "name": "Malay",
+      "native": "Bahasa Melayu"
+    }
+  ],
+  "strengths": [
+    "Leadership",
+    "Communication",
+    "Self-motivated",
+    "Team player",
+    "Time management",
+    "Critical thinking",
+    "Creative problem solving"
+  ]
+}
