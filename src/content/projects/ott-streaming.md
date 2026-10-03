@@ -27,4 +27,4 @@ An over-the-top (OTT) **video-on-demand** platform built to handle heavy traffic
 - **Identity & subscriptions** — implemented user authentication and subscription-management modules using secure identity protocols.
 - **Performance** — optimised database queries and API response times so the platform handles many concurrent sessions smoothly.
 
-> Client work — source code and screenshots are confidential.
+> Client work under NDA. Client names, source code and screenshots are confidential.

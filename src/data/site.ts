@@ -93,6 +93,7 @@ export const experience = [
         title: 'Associate Software Engineer',
         period: 'Jan 2026 — Present',
         points: [
+          'Built a kids\' events mobile app in Flutter for iOS and Android, plus its React admin panel and CMS.',
           'Engineer scalable, maintainable and testable solutions guided by clean architecture and clean-code practices.',
           'Deploy, monitor and optimise enterprise applications on Azure, AWS and Orel Cloud.',
           'Design RESTful APIs, database schemas and modular components; contribute to system-design discussions.',
@@ -169,7 +170,7 @@ export const timeline = [
   { year: '2023', title: 'Started Computer Science at IIT', body: 'BSc (Hons) at the Informatics Institute of Technology, affiliated with the University of Westminster.' },
   { year: '2024', title: 'Shipped my first systems', body: 'Library and Inventory Management Systems in Java, JavaFX and MySQL — where OOP and layered architecture finally clicked. Six University of Moratuwa certificates and five HackerRank badges along the way.' },
   { year: '2025', title: 'Software Engineer Intern at Innovation Quotient', body: 'Joined IQ in May. Secure APIs, database design and React front-ends for client projects — including an HR information system.' },
-  { year: '2026', title: 'Associate Software Engineer', body: 'Promoted in January. Now building health-tech, OTT streaming and logistics platforms with .NET Core, React, Next.js and Azure — while building HelioGuard, my final-year research project on explainable solar-flare forecasting. Also revamping the HDO website as a freelance project.' },
+  { year: '2026', title: 'Associate Software Engineer', body: "Promoted in January. Now building health-tech, OTT streaming, logistics and children's-events platforms with .NET Core, React, Next.js, Flutter and Azure — while building HelioGuard, my final-year research project on explainable solar-flare forecasting. Also revamping the HDO website as a freelance project." },
 ];
 
 export const facts = [

@@ -27,4 +27,4 @@ A health-tech platform for managing patient data securely and at scale, built as
 - **Architecture** — contributed to a back-end designed for security and growth, following clean-architecture principles.
 - **Quality** — worked with the QA team to put rigorous testing protocols in place and keep the platform compliant with health-data standards.
 
-> Client work — source code and screenshots are confidential.
+> Client work under NDA. Client names, source code and screenshots are confidential.

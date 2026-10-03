@@ -6,7 +6,7 @@ import { getProjects } from '../../lib/utils';
 const projects = await getProjects();
 const main = projects.filter((p) => !p.data.early);
 const early = projects.filter((p) => p.data.early);
-const tech = ['All', '.NET Core', 'React', 'Next.js', 'Azure', 'TypeScript', 'Java'];
+const tech = ['All', '.NET Core', 'React', 'Next.js', 'Flutter', 'Azure', 'Python', 'Java'];
 const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p) => p.data.stack.includes(t)).length);
 ---
 

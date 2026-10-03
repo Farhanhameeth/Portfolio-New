@@ -27,4 +27,4 @@ A web application for **package delivery and supply-chain management**: tracking
 - **Data layer** — integrated Strapi with PostgreSQL to manage real-time content and shipment data efficiently.
 - **Design system** — designed a library of custom, reusable React components, significantly reducing development time and keeping the UI consistent across the platform.
 
-> Client work — source code and screenshots are confidential.
+> Client work under NDA. Client names, source code and screenshots are confidential.
