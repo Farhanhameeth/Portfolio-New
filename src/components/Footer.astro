@@ -41,10 +41,7 @@ const year = new Date().getFullYear();
       <a href="#main" class="link">Back to top ↑</a>
     </div>
   </div>
-  <!-- SVG with textLength scales the name to exactly the viewport width, so no letter is ever clipped -->
-  <svg class="foot__wordmark" viewBox="0 0 1000 150" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-    <text x="4" y="138" textLength="992" lengthAdjust="spacingAndGlyphs">Farhan Hameeth</text>
-  </svg>
+  <div class="foot__wordmark" aria-hidden="true">Farhan Hameeth</div>
 </footer>
 
 <style>
@@ -63,8 +60,8 @@ const year = new Date().getFullYear();
   .foot__time { margin-top: 0.8rem; font-family: var(--f-mono); font-size: 1.1rem; }
   .foot__base { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.5rem 0; border-top: 1px solid var(--line); font-size: 0.7rem; }
   kbd { font-family: var(--f-mono); padding: 0.1rem 0.35rem; border-radius: 5px; border: 1px solid var(--line); }
-  .foot__wordmark { display: block; width: calc(100% - 2 * var(--gutter)); max-width: none; height: auto; margin: 1rem auto 0; overflow: visible; user-select: none; transform: translateY(12%); }
-  .foot__wordmark text { font-family: var(--f-sans); font-weight: 600; font-size: 150px; letter-spacing: -0.04em; fill: none; stroke: var(--line-2); stroke-width: 1; vector-effect: non-scaling-stroke; }
+  /* The name is ~6.9× its font-size wide, so 13.9vw keeps it inside ~96% of the viewport at every width. */
+  .foot__wordmark { font-size: 13.9vw; line-height: 0.75; letter-spacing: -0.07em; font-weight: 600; white-space: nowrap; text-align: center; color: transparent; -webkit-text-stroke: 1px var(--line-2); margin-top: 1rem; transform: translateY(14%); user-select: none; }
   @media (max-width: 900px) {
     .foot__grid { grid-template-columns: 1fr 1fr; }
     .foot__grid > :first-child { grid-column: 1 / -1; }
