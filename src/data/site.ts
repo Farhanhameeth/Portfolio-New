@@ -153,7 +153,7 @@ export const mlSpecialization = {
 export const certifications: { name: string; issuer: string; date?: string; url?: string }[] = [
   { name: 'Python for Beginners', issuer: 'University of Moratuwa', date: 'Mar 2023', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=4776&code=eTgj0cLwLu&qrcode=1' },
   { name: 'Python Programming', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=39990&code=A9xetXGL45&qrcode=1' },
-  { name: 'Web Design for Beginners', issuer: 'University of Moratuwa' },
+  { name: 'Web Design for Beginners', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=5101&code=pKDjlUuGw1&qrcode=1' },
   { name: 'Front-End Web Development', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=40022&code=ey5iopZZ7J&qrcode=1' },
   { name: 'Server-side Web Programming', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/lms/mod/customcert/verify_certificate.php?contextid=75742&code=OulbTjGHml&qrcode=1' },
   { name: 'Professional Practice in Software Development', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/lms/mod/customcert/verify_certificate.php?contextid=100190&code=VwPBv8sr40&qrcode=1' },
