@@ -1,16 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
 import SkillPlayground from '../components/SkillPlayground.astro';
+import Experience from '../components/Experience.astro';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { site, timeline, grades, education, certifications, languages, strengths, skills } from '../data/site';
+import { site, timeline, education, certifications, languages, strengths, skills, concepts } from '../data/site';
 
 const uom = certifications.filter((c) => c.issuer === 'University of Moratuwa');
 const hasCV = existsSync(join(process.cwd(), 'public', site.cvPath));
 const hr = certifications.filter((c) => c.issuer === 'HackerRank');
+const ml = certifications.find((c) => c.issuer.includes('Stanford'))!;
 ---
 
-<Base title="About" description="The story so far — Farhan Hameeth, full-stack developer and Computer Science undergraduate at IIT, Colombo.">
+<Base title="About" description="The story so far — Farhan Hameeth, Associate Software Engineer at Innovation Quotient and final-year Computer Science undergraduate at IIT, Colombo.">
   <!-- ───────── Header ───────── -->
   <section class="ah">
     <div class="wrap ah__grid">
@@ -21,9 +23,10 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
           <span class="split-line" data-split style="--d:.1s"><span>by <span class="serif italic accent">default.</span></span></span>
         </h1>
         <div class="ah__body" data-reveal style="--d:.3s">
-          <p class="lead">I'm Farhan — a Computer Science undergraduate at the Informatics Institute of Technology in Colombo, studying for a BSc (Hons) awarded by the University of Westminster.</p>
-          <p>My journey into software started with a simple question — <em>how does this actually work?</em> — and turned into a habit of building things to find out. I started with Java desktop apps, learned to love clean layered architecture and good database design, then went full-stack with Spring Boot, React and FastAPI.</p>
-          <p>Outside the editor I've spent years volunteering with the Leo Club, which taught me as much about leadership and teamwork as any module has. I speak English, Sinhala and Malay, and I'm always up for a hard problem and a good team.</p>
+          <p class="lead">I'm Farhan — an Associate Software Engineer at Innovation Quotient in Colombo, and a final-year Computer Science undergraduate at IIT, studying for a BSc (Hons) awarded by the University of Westminster.</p>
+          <p>My journey into software started with a simple question — <em>how does this actually work?</em> — and turned into a habit of building things to find out. Java desktop apps taught me OOP and layered architecture; today I build health-tech, streaming and logistics platforms with .NET Core, React, Next.js and Azure, guided by clean architecture and domain-driven design.</p>
+          <p>I'm especially interested in where robust engineering meets machine learning. I've completed the Machine Learning Specialization from Stanford and DeepLearning.AI, and I'm researching multimodal AI systems for communication coaching.</p>
+          <p>Outside the editor I've spent years volunteering with the Leo Club, which taught me as much about leadership and teamwork as any module has. I speak English, Sinhala and Malay.</p>
           <div class="ah__cta">
             <a href="/contact" class="btn btn--solid" data-magnetic="0.25">Get in touch</a>
             {hasCV && <a href={site.cvPath} class="btn" download data-magnetic="0.25">Download CV ↓</a>}
@@ -38,10 +41,21 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
           <span>Farhan Hameeth</span><span>{site.location}</span>
         </figcaption>
         <div class="ah__badge" aria-hidden="true">
-          <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs><text><textPath href="#circ">FULL-STACK DEVELOPER • CS @ IIT • COLOMBO • </textPath></text></svg>
+          <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs><text><textPath href="#circ">SOFTWARE ENGINEER • INNOVATION QUOTIENT • COLOMBO • </textPath></text></svg>
           <span>✦</span>
         </div>
       </figure>
+    </div>
+  </section>
+
+  <!-- ───────── Experience ───────── -->
+  <section class="section" id="experience">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">( 01 ) — Experience</p>
+        <h2 class="h2">Where I <span class="serif italic">work.</span></h2>
+      </div>
+      <Experience />
     </div>
   </section>
 
@@ -49,7 +63,7 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
   <section class="section tl" data-tl>
     <div class="wrap tl__grid">
       <div class="tl__aside">
-        <p class="label">( 01 ) — The story so far</p>
+        <p class="label">( 02 ) — The story so far</p>
         <div class="tl__year" aria-hidden="true"><span data-tl-year>{timeline[0].year}</span></div>
         <div class="tl__rail"><span data-tl-bar></span></div>
       </div>
@@ -69,30 +83,15 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
   <section class="section">
     <div class="wrap">
       <div class="sec-head">
-        <p class="label">( 02 ) — Toolbox</p>
+        <p class="label">( 03 ) — Toolbox</p>
         <h2 class="h2">The stack I <span class="serif italic">reach for.</span></h2>
       </div>
       <SkillPlayground />
-      <ul class="sr-only">{skills.map((s) => <li>{s.name} ({s.group})</li>)}</ul>
-    </div>
-  </section>
-
-  <!-- ───────── Grades ───────── -->
-  <section class="section">
-    <div class="wrap two">
-      <div>
-        <p class="label">( 03 ) — Report card</p>
-        <h2 class="h2" style="margin-top:1.2rem">Year one,<br /><span class="serif italic">in numbers.</span></h2>
-        <p class="muted" style="margin-top:1.5rem;max-width:38ch">Highlights from my first year of BSc (Hons) Computer Science at IIT. Scores out of 100.</p>
+      <div class="concepts" data-reveal>
+        <span class="mono muted">Also fluent in</span>
+        {concepts.map((c) => <span class="chip">{c}</span>)}
       </div>
-      <ul class="bars">
-        {grades.map((g, i) => (
-          <li class="bars__row" data-reveal style={`--d:${i * 0.08}s; --v:${g.score / 100}`}>
-            <div class="bars__top"><span>{g.module}</span><span class="mono"><span data-count={g.score}>0</span>/100</span></div>
-            <div class="bars__track"><span></span></div>
-          </li>
-        ))}
-      </ul>
+      <ul class="sr-only">{skills.map((s) => <li>{s.name} ({s.group})</li>)}</ul>
     </div>
   </section>
 
@@ -125,6 +124,14 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
         <p class="label">( 05 ) — Certifications</p>
         <h2 class="h2"><span data-count={certifications.length}>0</span> certificates <span class="serif italic">& counting.</span></h2>
       </div>
+      <article class="certs__hero" data-reveal data-tilt="3">
+        <div>
+          <p class="mono muted">Featured · {ml.issuer}</p>
+          <h3 class="h3">{ml.name}</h3>
+          <p class="muted">{ml.note}</p>
+        </div>
+        <span class="certs__seal" aria-hidden="true">ML</span>
+      </article>
       <div class="certs">
         <div class="certs__col" data-reveal>
           <p class="certs__issuer"><span class="mono muted">Issuer</span>University of Moratuwa</p>
@@ -213,14 +220,8 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
     .tl__year { font-size: 4.5rem; }
   }
 
-  /* Grades */
-  .two { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(2rem, 6vw, 6rem); align-items: end; }
-  .bars { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.6rem; }
-  .bars__top { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem; font-size: 1.02rem; }
-  .bars__track { height: 10px; border-radius: 99px; background: var(--bg-3); overflow: hidden; }
-  .bars__track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 50%, var(--fg)), var(--accent)); transform-origin: left; transform: scaleX(0); transition: transform 1.6s var(--ease) calc(var(--d, 0s) + 0.2s); }
-  .bars__row.is-in .bars__track span { transform: scaleX(var(--v)); }
-  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+  .concepts { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 2rem; }
+  .concepts .mono { font-size: 0.68rem; margin-right: 0.5rem; }
 
   /* Education */
   .edu { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
@@ -231,6 +232,11 @@ const hr = certifications.filter((c) => c.issuer === 'HackerRank');
   @media (max-width: 700px) { .edu__row { grid-template-columns: 1fr auto; gap: 0.6rem; } .edu__row > div { grid-column: 1 / -1; grid-row: 2; } }
 
   /* Certs */
+  .certs__hero { display: flex; justify-content: space-between; align-items: center; gap: 2rem; padding: clamp(1.4rem, 3vw, 2.4rem); margin-bottom: 1.5rem; border-radius: var(--radius); background: var(--accent); color: var(--accent-ink); transform: rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform 0.5s var(--ease), opacity 1s var(--ease); }
+  .certs__hero > div { display: grid; gap: 0.7rem; max-width: 70ch; }
+  .certs__hero .muted { color: color-mix(in srgb, var(--accent-ink) 70%, transparent); }
+  .certs__seal { flex: none; width: 110px; height: 110px; border-radius: 50%; display: grid; place-items: center; border: 1.5px dashed currentColor; font-family: var(--f-serif); font-style: italic; font-size: 2.6rem; animation: spin 30s linear infinite; }
+  @media (max-width: 700px) { .certs__seal { display: none; } }
   .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
   .certs__col { padding: 2rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); }
   .certs__issuer { display: grid; gap: 0.4rem; font-size: 1.5rem; letter-spacing: -0.03em; padding-bottom: 1.2rem; border-bottom: 1px solid var(--line); }

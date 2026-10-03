@@ -15,7 +15,7 @@ const p = project.data;
     <span class="mono muted">{String(index + 1).padStart(2, '0')}</span>
     <div class="pc__text">
       <h3 class="pc__title">{p.title}</h3>
-      <p class="pc__tag muted">{p.tagline}</p>
+      <p class="pc__tag muted">{p.company ? <><span class="pc__co">{p.company}</span> · </> : null}{p.tagline}</p>
     </div>
     <span class="mono muted pc__year">{p.year}</span>
   </div>
@@ -32,5 +32,6 @@ const p = project.data;
   .pc__title { font-size: clamp(1.4rem, 2.2vw, 1.9rem); letter-spacing: -0.035em; transition: color 0.3s; }
   .pc:hover .pc__title { color: var(--accent); }
   .pc__tag { font-size: 0.95rem; margin-top: 0.25rem; }
+  .pc__co { color: var(--accent); }
   .pc__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; padding: 0; margin: 0; }
 </style>

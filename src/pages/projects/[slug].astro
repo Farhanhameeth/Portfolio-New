@@ -30,8 +30,8 @@ const { Content } = await render(project);
       <dl class="pd__meta" data-reveal style="--d:.3s">
         <div><dt class="mono muted">Year</dt><dd>{p.year}</dd></div>
         <div><dt class="mono muted">Role</dt><dd>{p.role}</dd></div>
-        <div><dt class="mono muted">Type</dt><dd>{p.kind}</dd></div>
-        <div><dt class="mono muted">Status</dt><dd><span class:list={['pd__status', { 'is-live': p.status === 'In progress' }]}></span>{p.status}</dd></div>
+        <div><dt class="mono muted">{p.company ? 'Company' : 'Type'}</dt><dd>{p.company ?? p.kind}</dd></div>
+        <div><dt class="mono muted">{p.status ? 'Status' : 'Type'}</dt><dd>{p.status ? <><span class:list={['pd__status', { 'is-live': p.status === 'In progress' }]}></span>{p.status}</> : p.kind}</dd></div>
       </dl>
 
       <div class="pd__links" data-reveal style="--d:.35s">

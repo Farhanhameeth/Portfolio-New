@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import ParticleField from '../components/ParticleField.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import Experience from '../components/Experience.astro';
 import { site, heroVerbs, stack, facts } from '../data/site';
 import { getPosts, getProjects, formatDate, readingTime } from '../lib/utils';
 
@@ -10,12 +11,17 @@ const featured = projects.filter((p) => p.data.featured);
 const posts = (await getPosts()).slice(0, 4);
 
 const intro =
-  "I'm a Computer Science undergraduate at IIT, Colombo, who builds full-stack products end to end — from MySQL schemas and Spring Boot or FastAPI services to React interfaces people actually enjoy using. I care about clean architecture, honest UX and shipping things that work.";
+  "I'm a software engineer at Innovation Quotient in Colombo, building full-stack products end to end — from .NET Core APIs and database schemas to React and Next.js interfaces, deployed on Azure. Alongside work, I am finishing my final year of Computer Science at IIT and researching how AI fits into real software.";
+
+// Months since joining Innovation Quotient (May 2025), worked out at build time.
+const now = new Date();
+const monthsAtIQ = (now.getFullYear() - 2025) * 12 + now.getMonth() - 4;
+const professional = projects.filter((p) => p.data.kind === 'Professional').length;
 
 const numbers = [
-  { n: 90, suffix: '', label: 'Top university module score, out of 100' },
-  { n: 11, suffix: '', label: 'Certificates — University of Moratuwa & HackerRank' },
-  { n: 6, suffix: '+', label: 'Systems shipped — desktop, web & full-stack' },
+  { n: monthsAtIQ, suffix: '+', label: 'Months shipping production software at Innovation Quotient' },
+  { n: professional, suffix: '', label: 'Professional platforms — health-tech, streaming, logistics & HR' },
+  { n: 12, suffix: '', label: 'Certificates — Stanford & DeepLearning.AI, UoM, HackerRank' },
   { n: 3, suffix: '', label: 'Languages spoken — English, Sinhala, Malay' },
 ];
 ---
@@ -44,7 +50,7 @@ const numbers = [
           <span class="hero__verb" data-scramble data-words={JSON.stringify(heroVerbs)}>{heroVerbs[0]}</span>
         </p>
         <p class="hero__sub muted">
-          <span class="accent">*</span> Full-stack developer & CS undergrad at IIT · University of Westminster. Java, Spring Boot, React, Python.
+          <span class="accent">*</span> {site.role} at {site.company}. Final-year CS at IIT · University of Westminster. .NET Core, React, Next.js, Azure.
         </p>
         <div class="hero__cta">
           <a href="/projects" class="btn btn--solid" data-magnetic="0.25">See my work
@@ -95,17 +101,30 @@ const numbers = [
     </div>
   </section>
 
+  <!-- ───────── Experience ───────── -->
+  <section class="section xp-sec">
+    <div class="wrap xp-grid">
+      <div class="xp-side">
+        <p class="label">( 02 ) — Where I work</p>
+        <h2 class="h2">From intern to <span class="serif italic accent">engineer.</span></h2>
+        <p class="muted">Joined Innovation Quotient as an intern in May 2025 and was promoted to Associate Software Engineer in January 2026.</p>
+        <a href="/about#experience" class="link mono">Full experience →</a>
+      </div>
+      <Experience compact />
+    </div>
+  </section>
+
   <!-- ───────── Selected work: horizontal scroll ───────── -->
   <section class="work" data-hscroll>
     <div class="work__sticky">
       <div class="wrap work__head">
-        <p class="label">( 02 ) — Selected work</p>
+        <p class="label">( 03 ) — Selected work</p>
         <a href="/projects" class="link mono">All projects ({projects.length}) →</a>
       </div>
       <div class="work__track" data-hscroll-track>
         <div class="work__intro">
           <h2 class="h2">Things I've<br /><span class="serif italic accent">built</span> lately.</h2>
-          <p class="muted">From JavaFX desktop apps to full-stack analytics platforms. Drag your eyes → or keep scrolling.</p>
+          <p class="muted">Production platforms from my work at Innovation Quotient — health-tech, streaming, logistics and HR. Keep scrolling →</p>
         </div>
         {featured.map((p, i) => (
           <div class="work__card"><ProjectCard project={p} index={i} variant="wide" /></div>
@@ -122,7 +141,7 @@ const numbers = [
   <!-- ───────── Numbers ───────── -->
   <section class="section">
     <div class="wrap">
-      <p class="label">( 03 ) — By the numbers</p>
+      <p class="label">( 04 ) — By the numbers</p>
       <div class="nums">
         {numbers.map((n, i) => (
           <div class="nums__item" data-reveal style={`--d:${i * 0.08}s`}>
@@ -139,7 +158,7 @@ const numbers = [
     <div class="wrap">
       <div class="writing__head">
         <div>
-          <p class="label">( 04 ) — Writing</p>
+          <p class="label">( 05 ) — Writing</p>
           <h2 class="h2" style="margin-top:1.2rem">Notes from the<br /><span class="serif italic">workbench.</span></h2>
         </div>
         <a href="/blog" class="btn" data-magnetic="0.25">All posts</a>
@@ -212,6 +231,14 @@ const numbers = [
   .facts__row { padding: 1.2rem 1.2rem 1.2rem 0; border-bottom: 1px solid var(--line); }
   .facts dt { font-size: 0.68rem; margin-bottom: 0.4rem; }
   .facts dd { margin: 0; font-size: 1.05rem; }
+
+  /* Experience */
+  .xp-sec { padding-top: 0; }
+  .xp-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .xp-side { position: sticky; top: 110px; display: grid; gap: 1.4rem; }
+  .xp-side .muted { max-width: 40ch; }
+  .xp-side .link { justify-self: start; }
+  @media (max-width: 900px) { .xp-grid { grid-template-columns: 1fr; } .xp-side { position: static; } }
 
   /* Work */
   .work { position: relative; }

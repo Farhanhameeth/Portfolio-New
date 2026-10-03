@@ -19,11 +19,12 @@ So I started again.
 
 ## What I'll write about
 
-Things I'm learning as a Computer Science student at IIT and as a full-stack developer:
+Things I'm learning as a software engineer at Innovation Quotient and a final-year Computer Science student at IIT:
 
-1. Lessons from building real systems in **Java**, **Spring Boot**, **React** and **FastAPI**
-2. Notes from university modules that turned out to be surprisingly useful
-3. Project breakdowns — what worked, what didn't, what I'd do differently
+1. Lessons from building production systems with **.NET Core**, **React**, **Next.js** and **Azure**
+2. Clean architecture, domain-driven design and what they look like in real code
+3. Machine learning and multimodal AI — what I'm learning and researching
+4. Project breakdowns — what worked, what didn't, what I'd do differently
 
 ## Psst
 

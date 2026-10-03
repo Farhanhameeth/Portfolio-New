@@ -1,10 +1,11 @@
 ---
 title: HRIS
 tagline: Human resource information system
-summary: A feature-rich HR information system front-end covering employees, attendance, leave, payroll, loans, KPIs, grievances, trainings and an interactive org chart.
+summary: Built during my internship at Innovation Quotient — the front-end of a feature-rich HR information system covering employees, attendance, leave, payroll, loans, KPIs, grievances, trainings and an interactive org chart.
 year: '2025'
-role: Front-end developer
-kind: Team
+role: Software Engineer Intern
+company: Innovation Quotient
+kind: Professional
 stack: [React, Redux Toolkit, Material UI, Tailwind CSS, Chart.js, FullCalendar, Axios, Vite]
 highlights:
   - 15+ modules — employees, attendance, leave, payroll, loans, KPIs, grievances, tickets, trainings and resources
@@ -14,12 +15,12 @@ mark: HRIS
 color: '#ff8a1f'
 repo: https://github.com/Farhanhameeth/HRIS
 featured: true
-order: 2
+order: 4
 ---
 
 ## Overview
 
-An HRIS brings every people-process in a company into one place. This front-end is built with **React** and **Redux Toolkit**, styled with **Material UI** and **Tailwind CSS**, and talks to a REST API through **Axios** with JWT authentication.
+My first project as a **Software Engineer Intern at Innovation Quotient**. An HRIS brings every people-process in a company into one place. This front-end is built with **React** and **Redux Toolkit**, styled with **Material UI** and **Tailwind CSS**, and talks to a REST API through **Axios** with JWT authentication.
 
 ## Modules
 

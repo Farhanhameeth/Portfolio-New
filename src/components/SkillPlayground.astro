@@ -1,20 +1,18 @@
 ---
 import { skills } from '../data/site';
 const groups = [...new Set(skills.map((s) => s.group))];
+const cls = (g: string) => `sp__pill--${g.toLowerCase().replace(/[^a-z]+/g, '-')}`;
 ---
 
 <div class="sp" data-sp>
   <div class="sp__box" data-sp-box data-cursor="Drag">
     {skills.map((s) => (
-      <span class={`sp__pill sp__pill--${s.group.toLowerCase()}`} data-sp-pill data-group={s.group}>
-        {s.name}
-        <i class="sp__lvl" aria-hidden="true">{'●'.repeat(s.level)}{'○'.repeat(4 - s.level)}</i>
-      </span>
+      <span class={`sp__pill ${cls(s.group)}`} data-sp-pill data-group={s.group}>{s.name}</span>
     ))}
     <p class="sp__hint mono muted">Grab a skill and throw it ↓</p>
   </div>
   <div class="sp__legend mono">
-    {groups.map((g) => <span class={`sp__key sp__pill--${g.toLowerCase()}`}><i></i>{g}</span>)}
+    {groups.map((g) => <span class={`sp__key ${cls(g)}`}><i></i>{g}</span>)}
     <button class="sp__shake" data-sp-shake>Shake ↯</button>
   </div>
 </div>
@@ -23,19 +21,18 @@ const groups = [...new Set(skills.map((s) => s.group))];
   .sp__box { position: relative; height: 460px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: radial-gradient(circle at 50% 120%, var(--accent-soft), transparent 60%), var(--bg-2); touch-action: pan-y; user-select: none; }
   .sp__pill { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.2rem; border-radius: 999px; font-size: 1.05rem; font-weight: 500; white-space: nowrap; background: var(--fg); color: var(--bg); will-change: transform; cursor: grab; }
   .sp__pill:active { cursor: grabbing; }
-  .sp__lvl { font-style: normal; font-size: 0.5rem; letter-spacing: 0.1em; opacity: 0.6; }
   .sp__pill--backend { background: var(--accent); color: var(--accent-ink); }
   .sp__pill--frontend { background: var(--fg); color: var(--bg); }
-  .sp__pill--data { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); }
-  .sp__pill--tools { background: var(--bg-3); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .sp__pill--data-ai { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .sp__pill--cloud-tools { background: var(--bg-3); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line-2); }
   .sp__hint { position: absolute; left: 50%; top: 1.2rem; transform: translateX(-50%); font-size: 0.68rem; pointer-events: none; }
   .sp__legend { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center; margin-top: 1rem; font-size: 0.7rem; color: var(--muted); }
   .sp__key { display: inline-flex; align-items: center; gap: 0.5rem; background: none !important; box-shadow: none !important; color: var(--muted) !important; }
   .sp__key i { width: 12px; height: 12px; border-radius: 50%; }
   .sp__key.sp__pill--backend i { background: var(--accent); }
   .sp__key.sp__pill--frontend i { background: var(--fg); }
-  .sp__key.sp__pill--data i { box-shadow: inset 0 0 0 1.5px var(--fg); }
-  .sp__key.sp__pill--tools i { background: var(--bg-3); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .sp__key.sp__pill--data-ai i { box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .sp__key.sp__pill--cloud-tools i { background: var(--bg-3); box-shadow: inset 0 0 0 1px var(--line-2); }
   .sp__shake { margin-left: auto; padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid var(--line-2); font-family: var(--f-mono); font-size: 0.7rem; text-transform: uppercase; }
   .sp__shake:hover { background: var(--fg); color: var(--bg); }
 

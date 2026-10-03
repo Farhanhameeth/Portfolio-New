@@ -4,7 +4,9 @@ import ProjectCard from '../../components/ProjectCard.astro';
 import { getProjects } from '../../lib/utils';
 
 const projects = await getProjects();
-const tech = ['All', 'React', 'Java', 'Python', 'Spring Boot', 'MySQL', 'JavaFX'];
+const main = projects.filter((p) => !p.data.early);
+const early = projects.filter((p) => p.data.early);
+const tech = ['All', '.NET Core', 'React', 'Next.js', 'Azure', 'TypeScript', 'Java'];
 const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p) => p.data.stack.includes(t)).length);
 ---
 
@@ -17,7 +19,7 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
         <span class="split-line" data-split style="--d:.1s"><span><span class="serif italic">projects</span><sup class="accent mono">({projects.length})</sup></span></span>
       </h1>
       <div class="ph__bar" data-reveal style="--d:.25s">
-        <p class="muted ph__lead">Desktop systems, full-stack platforms and websites — from my first JavaFX app to team-built analytics tools. Filter by tech:</p>
+        <p class="muted ph__lead">Production platforms from Innovation Quotient, plus the projects that got me here. Filter by tech:</p>
         <div class="filters" role="toolbar" aria-label="Filter projects by technology" data-filters>
           {tech.map((t, i) => (
             <button class:list={['filter', { 'is-on': i === 0 }]} data-filter={t} aria-pressed={i === 0 ? 'true' : 'false'}>
@@ -31,7 +33,7 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
 
   <section class="wrap grid-wrap">
     <ul class="pgrid" data-grid>
-      {projects.map((p, i) => (
+      {main.map((p, i) => (
         <li class="pgrid__item" data-reveal style={`--d:${(i % 2) * 0.1}s`} data-stack={p.data.stack.join('|')}>
           <ProjectCard project={p} index={i} />
         </li>
@@ -39,6 +41,28 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
     </ul>
     <p class="pgrid__empty muted" data-empty hidden>No projects with that tech yet — but give it time.</p>
   </section>
+
+  {early.length > 0 && (
+    <section class="wrap early" data-early>
+      <div class="early__head">
+        <p class="label">Early work</p>
+        <h2 class="h3">Where it started — student projects in Java & JavaFX.</h2>
+      </div>
+      <ul class="early__list">
+        {early.map((p) => (
+          <li data-reveal data-stack={p.data.stack.join('|')} class="early__item">
+            <a href={`/projects/${p.id}`} class="early__row" data-cursor="View">
+              <span class="mono muted">{p.data.year}</span>
+              <span class="early__title">{p.data.title}</span>
+              <span class="muted early__tag">{p.data.tagline}</span>
+              <span class="mono muted early__stack">{p.data.stack.slice(0, 3).join(' · ')}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
 
   <section class="wrap more">
     <p class="muted">Plus coursework and experiments on GitHub.</p>
@@ -63,6 +87,16 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
   .pgrid__item.is-out { display: none; }
   .pgrid.is-filtered .pgrid__item { margin-top: 0; }
   .pgrid__empty { padding: 4rem 0; text-align: center; }
+  .early { padding-top: clamp(80px, 10vw, 140px); }
+  .early__head { display: grid; gap: 1rem; margin-bottom: 2rem; }
+  .early__head .h3 { max-width: 30ch; color: var(--fg-2); }
+  .early__list { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+  .early__item.is-out { display: none; }
+  .early__row { display: grid; grid-template-columns: 80px 1.2fr 1.4fr 1fr auto; gap: 1.5rem; align-items: baseline; padding: 1.4rem 0; border-bottom: 1px solid var(--line); transition: padding 0.4s var(--ease), color 0.3s; }
+  .early__row:hover { padding-left: 0.8rem; color: var(--accent); }
+  .early__title { font-size: 1.3rem; letter-spacing: -0.02em; }
+  .early__stack { font-size: 0.68rem; }
+  @media (max-width: 800px) { .early__row { grid-template-columns: 60px 1fr auto; } .early__tag, .early__stack { display: none; } }
   .more { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding-block: clamp(80px, 10vw, 140px); }
   @media (max-width: 800px) {
     .ph { padding-top: 120px; }
@@ -77,6 +111,8 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
     const grid = document.querySelector<HTMLElement>('[data-grid]');
     if (!bar || !grid) return;
     const items = [...grid.querySelectorAll<HTMLElement>('.pgrid__item')];
+    const earlyItems = [...document.querySelectorAll<HTMLElement>('.early__item')];
+    const earlySec = document.querySelector<HTMLElement>('[data-early]');
     const empty = document.querySelector<HTMLElement>('[data-empty]')!;
     bar.addEventListener('click', (e) => {
       const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
@@ -93,8 +129,15 @@ const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p
           it.classList.toggle('is-out', !ok);
           if (ok) { shown++; it.classList.add('is-in'); }
         });
+        let earlyShown = 0;
+        earlyItems.forEach((it) => {
+          const ok = f === 'All' || it.dataset.stack!.split('|').includes(f);
+          it.classList.toggle('is-out', !ok);
+          if (ok) { earlyShown++; it.classList.add('is-in'); }
+        });
+        if (earlySec) earlySec.hidden = earlyShown === 0;
         grid.classList.toggle('is-filtered', f !== 'All');
-        empty.hidden = shown > 0;
+        empty.hidden = shown + earlyShown > 0;
       };
       const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
       doc.startViewTransition ? doc.startViewTransition(apply) : apply();

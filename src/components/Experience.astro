@@ -1,0 +1,56 @@
+---
+import { experience } from '../data/site';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+
+<div class:list={['xp', { 'xp--compact': compact }]}>
+  {experience.map((job) => (
+    <article class="xp__job" data-reveal>
+      <header class="xp__head">
+        <div>
+          <h3 class="xp__company">{job.company}</h3>
+          <p class="mono muted">{job.place}</p>
+        </div>
+        <span class="chip"><span class="dot"></span>Current</span>
+      </header>
+      <ol class="xp__roles">
+        {job.roles.map((r, i) => (
+          <li class="xp__role" data-reveal style={`--d:${0.1 + i * 0.1}s`}>
+            <span class:list={['xp__node', { 'is-now': i === 0 }]} aria-hidden="true"></span>
+            <div class="xp__rhead">
+              <h4 class="xp__title">{r.title}</h4>
+              <span class="mono muted">{r.period}</span>
+            </div>
+            {!compact && (
+              <ul class="xp__points">{r.points.map((pt) => <li>{pt}</li>)}</ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </article>
+  ))}
+</div>
+
+<style>
+  .xp { display: grid; gap: 1.5rem; }
+  .xp__job { border: 1px solid var(--line); border-radius: 24px; background: var(--bg-2); padding: clamp(1.4rem, 3vw, 2.6rem); position: relative; overflow: hidden; isolation: isolate; }
+  .xp__job::before { content: ''; position: absolute; right: -20%; top: -60%; width: 70%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(closest-side, var(--accent-soft), transparent); z-index: -1; }
+  .xp__head { display: flex; justify-content: space-between; align-items: start; gap: 1rem; flex-wrap: wrap; padding-bottom: 1.6rem; border-bottom: 1px solid var(--line); }
+  .xp__company { font-size: clamp(1.6rem, 3.4vw, 2.8rem); letter-spacing: -0.04em; margin-bottom: 0.4rem; }
+  .xp__head .mono { font-size: 0.68rem; }
+  .xp__roles { list-style: none; margin: 0; padding: 0; position: relative; }
+  .xp__roles::before { content: ''; position: absolute; left: 6px; top: 2.2rem; bottom: 2.2rem; width: 1px; background: linear-gradient(var(--accent), var(--line-2)); }
+  .xp__role { position: relative; padding: 1.6rem 0 1.6rem 2.2rem; border-bottom: 1px dashed var(--line); }
+  .xp__role:last-child { border-bottom: 0; padding-bottom: 0; }
+  .xp__node { position: absolute; left: 0; top: 2.05rem; width: 13px; height: 13px; border-radius: 50%; background: var(--bg-2); border: 1px solid var(--line-2); }
+  .xp__node.is-now { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 6px var(--accent-soft); }
+  .xp__rhead { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .xp__title { font-size: clamp(1.2rem, 2.2vw, 1.7rem); letter-spacing: -0.03em; }
+  .xp__rhead .mono { font-size: 0.7rem; }
+  .xp__points { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; gap: 0.6rem; max-width: 75ch; }
+  .xp__points li { position: relative; padding-left: 1.2rem; color: var(--fg-2); }
+  .xp__points li::before { content: '→'; position: absolute; left: 0; color: var(--accent); font-size: 0.85em; top: 0.1em; }
+  .xp--compact .xp__role { padding-block: 1.2rem; }
+  .xp--compact .xp__node { top: 1.65rem; }
+</style>

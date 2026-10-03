@@ -5,14 +5,15 @@ export const site = {
   name: 'Farhan Hameeth',
   first: 'Farhan',
   last: 'Hameeth',
-  role: 'Full-Stack Developer',
-  title: 'Farhan Hameeth — Full-Stack Developer',
+  role: 'Associate Software Engineer',
+  company: 'Innovation Quotient',
+  title: 'Farhan Hameeth — Software Engineer',
   description:
-    'Farhan Hameeth is a full-stack developer and Computer Science undergraduate at IIT (University of Westminster) in Colombo, Sri Lanka, building with Java, Spring Boot, React and Python.',
+    'Farhan Hameeth is an Associate Software Engineer at Innovation Quotient in Colombo, Sri Lanka, building full-stack products with .NET Core, React, Next.js and Azure — and a final-year Computer Science undergraduate at IIT (University of Westminster).',
   location: 'Colombo, Sri Lanka',
   timezone: 'Asia/Colombo',
   email: 'farhanhameeth1@gmail.com',
-  availability: 'Open to internships & freelance work',
+  availability: 'Open to interesting projects & collaborations',
   // Drop a file at public/cv.pdf and a "Download CV" button appears automatically.
   cvPath: '/cv.pdf',
 };
@@ -33,52 +34,88 @@ export const nav = [
 ];
 
 // Words that cycle in the hero: "I build ___"
+// Words that cycle in the hero: "I build ___"
 export const heroVerbs = [
-  'full-stack web apps',
-  'Spring Boot APIs',
-  'React interfaces',
-  'HR analytics dashboards',
-  'JavaFX desktop tools',
-  'things people use',
+  'scalable .NET Core APIs',
+  'React & Next.js front-ends',
+  'health-tech platforms',
+  'streaming experiences',
+  'cloud-ready systems on Azure',
+  'AI-powered products',
 ];
 
 export const stack = [
-  'Java', 'Spring Boot', 'React', 'TypeScript', 'JavaScript', 'Python', 'FastAPI',
-  'MySQL', 'Tailwind CSS', 'JavaFX', 'Redux', 'HTML', 'CSS', 'Git', 'Vite', 'REST',
+  'C#', '.NET Core', 'ASP.NET Web API', 'Entity Framework', 'React', 'Next.js', 'TypeScript', 'Node.js',
+  'Azure', 'AWS', 'MSSQL', 'PostgreSQL', 'Strapi', 'Tailwind CSS', 'Python', 'TensorFlow', 'Java', 'Spring Boot',
 ];
 
-export type SkillGroup = 'Backend' | 'Frontend' | 'Data' | 'Tools';
-export const skills: { name: string; group: SkillGroup; level: number }[] = [
-  { name: 'Java', group: 'Backend', level: 4 },
-  { name: 'Spring Boot', group: 'Backend', level: 3 },
-  { name: 'Python', group: 'Backend', level: 3 },
-  { name: 'FastAPI', group: 'Backend', level: 3 },
-  { name: 'JavaFX', group: 'Backend', level: 3 },
-  { name: 'React', group: 'Frontend', level: 3 },
-  { name: 'JavaScript', group: 'Frontend', level: 3 },
-  { name: 'TypeScript', group: 'Frontend', level: 2 },
-  { name: 'HTML', group: 'Frontend', level: 4 },
-  { name: 'CSS', group: 'Frontend', level: 4 },
-  { name: 'Tailwind', group: 'Frontend', level: 3 },
-  { name: 'Redux', group: 'Frontend', level: 2 },
-  { name: 'MySQL', group: 'Data', level: 4 },
-  { name: 'SQL', group: 'Data', level: 4 },
-  { name: 'Git', group: 'Tools', level: 3 },
-  { name: 'Vite', group: 'Tools', level: 3 },
+export type SkillGroup = 'Backend' | 'Frontend' | 'Data & AI' | 'Cloud & Tools';
+export const skills: { name: string; group: SkillGroup }[] = [
+  { name: 'C#', group: 'Backend' },
+  { name: '.NET Core', group: 'Backend' },
+  { name: 'ASP.NET Web API', group: 'Backend' },
+  { name: 'EF Core', group: 'Backend' },
+  { name: 'Node.js', group: 'Backend' },
+  { name: 'Spring Boot', group: 'Backend' },
+  { name: 'Java', group: 'Backend' },
+  { name: 'React', group: 'Frontend' },
+  { name: 'Next.js', group: 'Frontend' },
+  { name: 'TypeScript', group: 'Frontend' },
+  { name: 'JavaScript', group: 'Frontend' },
+  { name: 'Tailwind', group: 'Frontend' },
+  { name: 'Flutter', group: 'Frontend' },
+  { name: 'MSSQL', group: 'Data & AI' },
+  { name: 'PostgreSQL', group: 'Data & AI' },
+  { name: 'MySQL', group: 'Data & AI' },
+  { name: 'Python', group: 'Data & AI' },
+  { name: 'TensorFlow', group: 'Data & AI' },
+  { name: 'scikit-learn', group: 'Data & AI' },
+  { name: 'Azure', group: 'Cloud & Tools' },
+  { name: 'AWS', group: 'Cloud & Tools' },
+  { name: 'Azure DevOps', group: 'Cloud & Tools' },
+  { name: 'CI/CD', group: 'Cloud & Tools' },
+  { name: 'Strapi', group: 'Cloud & Tools' },
+  { name: 'Git', group: 'Cloud & Tools' },
+];
+
+export const concepts = ['Clean Architecture', 'Domain-Driven Design', 'RESTful APIs', 'System design', 'Agile', 'Multimodal AI'];
+
+// Work history, newest first.
+export const experience = [
+  {
+    company: 'Innovation Quotient (Pvt) Ltd',
+    place: 'Colombo, Sri Lanka',
+    roles: [
+      {
+        title: 'Associate Software Engineer',
+        period: 'Jan 2026 — Present',
+        points: [
+          'Engineer scalable, maintainable and testable solutions guided by clean architecture and clean-code practices.',
+          'Deploy, monitor and optimise enterprise applications on Azure, AWS and Orel Cloud.',
+          'Design RESTful APIs, database schemas and modular components; contribute to system-design discussions.',
+          'Review code, debug, refactor and troubleshoot production issues with performance optimisations.',
+          'Work across CI/CD pipelines, version control and agile delivery with cross-functional teams.',
+        ],
+      },
+      {
+        title: 'Software Engineer Intern',
+        period: 'May 2025 — Dec 2025',
+        points: [
+          'Helped design and implement secure APIs and database structures for client projects.',
+          'Built front-end modules for an HR information system (HRIS) in React and Redux.',
+          'Broke complex problems into manageable tasks in an agile team; took part in code reviews and daily stand-ups.',
+        ],
+      },
+    ],
+  },
 ];
 
 export const education = [
   {
-    title: 'BSc (Hons) Computer Science',
+    title: 'BSc (Hons) Computer Science — final year',
     place: 'Informatics Institute of Technology (IIT)',
     note: 'Affiliated with the University of Westminster, UK',
     period: 'Sep 2023 — Present',
-  },
-  {
-    title: 'Full Stack Developer Programme',
-    place: 'University of Moratuwa',
-    note: 'Delivered with DP Education',
-    period: 'Completed',
   },
   {
     title: 'GCE Advanced Level — Physical Science',
@@ -94,16 +131,8 @@ export const education = [
   },
 ];
 
-// Year-one university results (out of 100). Edit or extend as new results come in.
-export const grades = [
-  { module: 'Computer Systems Fundamentals', score: 90 },
-  { module: 'Software Development II (Java)', score: 83 },
-  { module: 'Web Design & Development', score: 82 },
-  { module: 'Mathematics for Computing', score: 80 },
-  { module: 'Software Development I (Python)', score: 73 },
-];
-
 export const certifications = [
+  { name: 'Machine Learning Specialization', issuer: 'DeepLearning.AI & Stanford', note: 'Coursera · Andrew Ng — supervised learning, advanced learning algorithms (neural networks, decision trees) and unsupervised learning with Python, TensorFlow and scikit-learn' },
   { name: 'Python for Beginners', issuer: 'University of Moratuwa' },
   { name: 'Python Programming', issuer: 'University of Moratuwa' },
   { name: 'Web Design for Beginners', issuer: 'University of Moratuwa' },
@@ -134,16 +163,16 @@ export const timeline = [
   { year: '2018', title: 'Joined the Leo Club', body: 'Member of the Leo Club of Asian Grammar School — first taste of organising people and projects for the community.' },
   { year: '2019', title: "St. Benedict's College", body: 'A/Ls in the Physical Science stream: maths, physics and a lot of problem sets.' },
   { year: '2020', title: 'Leo Club of Kottawa Central Golden City', body: 'Continued community service with the Omega club through 2021, sharpening leadership and teamwork.' },
-  { year: '2023', title: 'Started Computer Science at IIT', body: 'BSc (Hons) at the Informatics Institute of Technology, affiliated with the University of Westminster. Top first-year grade: 90 in Computer Systems Fundamentals.' },
-  { year: '2024', title: 'Shipped my first Java systems', body: 'Built Library and Inventory Management Systems in Java, JavaFX and MySQL — layered architecture, OOP and real CRUD. Collected six University of Moratuwa certificates and five HackerRank badges along the way.' },
-  { year: '2025', title: 'Going full-stack', body: 'React + Redux HRIS front-end, the MedDiary marketing site and a React/Spring Boot point-of-sale system.' },
-  { year: '2026', title: 'PerformEdge', body: 'HR analytics and workforce-intelligence platform with a team: React + TypeScript on the front, FastAPI + MySQL on the back. And this site, rebuilt from scratch.' },
+  { year: '2023', title: 'Started Computer Science at IIT', body: 'BSc (Hons) at the Informatics Institute of Technology, affiliated with the University of Westminster.' },
+  { year: '2024', title: 'Shipped my first systems', body: 'Library and Inventory Management Systems in Java, JavaFX and MySQL — where OOP and layered architecture finally clicked. Six University of Moratuwa certificates and five HackerRank badges along the way.' },
+  { year: '2025', title: 'Software Engineer Intern at Innovation Quotient', body: 'Joined IQ in May. Secure APIs, database design and React front-ends for client projects — including an HR information system.' },
+  { year: '2026', title: 'Associate Software Engineer', body: 'Promoted in January. Now building health-tech, OTT streaming and logistics platforms with .NET Core, React, Next.js and Azure — while finishing my final year and researching multimodal AI for communication coaching.' },
 ];
 
 export const facts = [
+  { k: 'Currently', v: 'Associate Software Engineer @ Innovation Quotient' },
+  { k: 'Studying', v: 'Final-year BSc (Hons) CS — IIT / Westminster' },
+  { k: 'Researching', v: 'Multimodal AI for communication coaching' },
   { k: 'Speaks', v: 'English, Sinhala & Malay' },
   { k: 'Based in', v: 'Colombo, Sri Lanka (UTC+5:30)' },
-  { k: 'Top grade', v: '90 / 100 — Computer Systems Fundamentals' },
-  { k: 'Certificates', v: '11 (UoM × 6, HackerRank × 5)' },
-  { k: 'Off-screen', v: 'Leo Club volunteer since 2018' },
 ];

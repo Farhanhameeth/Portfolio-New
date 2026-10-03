@@ -13,7 +13,9 @@ highlights:
 color: '#a371f7'
 cover: /images/projects/inventory.webp
 repo: https://github.com/Farhanhameeth/Inventory-management-system
-order: 5
+order: 6
+early: true
+status: Archived
 ---
 
 ## Overview

@@ -10,8 +10,12 @@ const projects = defineCollection({
     summary: z.string(),
     year: z.string(),
     role: z.string(),
-    kind: z.enum(['Team', 'Solo', 'Academic', 'Client']),
-    status: z.enum(['Shipped', 'In progress', 'Archived']).default('Shipped'),
+    /** Company the work was done at, if any */
+    company: z.string().optional(),
+    kind: z.enum(['Professional', 'Team', 'Solo', 'Academic']),
+    status: z.enum(['Shipped', 'In progress', 'Archived']).optional(),
+    /** Early/student work is shown in a separate, smaller section */
+    early: z.boolean().default(false),
     stack: z.array(z.string()),
     highlights: z.array(z.string()).default([]),
     color: z.string().default('#ff5b2e'),

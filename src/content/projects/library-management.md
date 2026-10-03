@@ -13,7 +13,9 @@ highlights:
 color: '#d29922'
 cover: /images/projects/library.webp
 repo: https://github.com/Farhanhameeth/Library-Management-System
-order: 6
+order: 7
+early: true
+status: Archived
 ---
 
 ## Overview

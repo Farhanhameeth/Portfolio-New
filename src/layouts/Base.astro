@@ -67,6 +67,7 @@ const commands = [
       '@type': 'Person',
       name: site.name,
       jobTitle: site.role,
+      worksFor: { '@type': 'Organization', name: 'Innovation Quotient (Pvt) Ltd' },
       url: Astro.site?.toString(),
       email: `mailto:${site.email}`,
       address: { '@type': 'PostalAddress', addressLocality: 'Colombo', addressCountry: 'LK' },
