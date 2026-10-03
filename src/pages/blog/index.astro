@@ -1,0 +1,69 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPosts, slugify } from '../../lib/utils';
+
+const posts = await getPosts();
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
+---
+
+<Base title="Blog" description="Writing by Farhan Hameeth — notes on full-stack development, computer science and building things.">
+  <section class="bh">
+    <div class="wrap">
+      <p class="label">Blog · {posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+      <h1 class="display bh__title">
+        <span class="split-line" data-split><span>Notes &</span></span>
+        <span class="split-line" data-split style="--d:.1s"><span class="serif italic">thoughts.</span></span>
+      </h1>
+      <div class="bh__tools" data-reveal style="--d:.25s">
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          <input type="search" placeholder="Search posts…" data-post-search aria-label="Search posts" />
+        </label>
+        <div class="bh__tags">
+          {tags.map((t) => <a href={`/blog/tags/${slugify(t)}`} class="chip bh__tag">#{t}</a>)}
+          <a href="/rss.xml" class="chip bh__tag">RSS ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap bl">
+    {posts.length ? <PostList posts={posts} /> : <p class="muted">First post coming soon.</p>}
+    <p class="muted bl__empty" data-post-empty hidden>No posts match that search.</p>
+  </section>
+</Base>
+
+<style>
+  .bh { padding-top: 150px; padding-bottom: 3rem; }
+  .bh__title { margin-top: 1.5rem; }
+  .bh__tools { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 3rem; }
+  .search { display: flex; align-items: center; gap: 0.7rem; height: 52px; padding: 0 1.2rem; border-radius: 999px; border: 1px solid var(--line-2); min-width: min(360px, 100%); transition: border-color 0.3s; }
+  .search:focus-within { border-color: var(--accent); }
+  .search svg { width: 18px; height: 18px; color: var(--muted); flex: none; }
+  .search input { flex: 1; min-width: 0; background: none; border: 0; outline: 0; color: var(--fg); font: inherit; }
+  .bh__tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .bh__tag:hover { border-color: var(--accent); color: var(--accent); }
+  .bl { padding-bottom: clamp(80px, 10vw, 140px); }
+  .bl__empty { padding: 3rem 0; text-align: center; }
+  @media (max-width: 800px) { .bh { padding-top: 120px; } }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const input = document.querySelector<HTMLInputElement>('[data-post-search]');
+    if (!input) return;
+    const items = [...document.querySelectorAll<HTMLElement>('[data-post-list] > li')];
+    const empty = document.querySelector<HTMLElement>('[data-post-empty]')!;
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let shown = 0;
+      items.forEach((li) => {
+        const ok = !q || li.dataset.search!.includes(q);
+        li.classList.toggle('is-hidden', !ok);
+        if (ok) shown++;
+      });
+      empty.hidden = shown > 0;
+    });
+  });
+</script>

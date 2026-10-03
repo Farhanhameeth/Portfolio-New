@@ -1,0 +1,70 @@
+<div class="cursor" aria-hidden="true" transition:persist="cursor" data-cursor-root>
+  <div class="cursor__dot"></div>
+  <div class="cursor__ring"><span class="cursor__label"></span></div>
+</div>
+
+<style>
+  .cursor { position: fixed; inset: 0; pointer-events: none; z-index: 200; display: none; }
+  .cursor.is-on { display: block; }
+  .cursor__dot, .cursor__ring { position: absolute; left: 0; top: 0; border-radius: 50%; will-change: transform; }
+  .cursor__dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--accent); }
+  .cursor__ring {
+    width: 38px; height: 38px; margin: -19px 0 0 -19px;
+    border: 1px solid color-mix(in srgb, var(--fg) 45%, transparent);
+    display: grid; place-items: center;
+    transition: width 0.45s var(--ease), height 0.45s var(--ease), margin 0.45s var(--ease), background-color 0.35s, border-color 0.35s, opacity 0.3s;
+  }
+  .cursor.is-link .cursor__ring { width: 60px; height: 60px; margin: -30px 0 0 -30px; border-color: var(--accent); background: var(--accent-soft); }
+  .cursor.has-label .cursor__ring { width: 92px; height: 92px; margin: -46px 0 0 -46px; background: var(--accent); border-color: var(--accent); }
+  .cursor.has-label .cursor__dot { opacity: 0; }
+  .cursor__label { font-family: var(--f-mono); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-ink); opacity: 0; transition: opacity 0.25s; }
+  .cursor.has-label .cursor__label { opacity: 1; }
+  .cursor.is-down .cursor__dot { background: var(--fg); }
+  .cursor.is-hidden { opacity: 0; }
+  :global(html.has-cursor), :global(html.has-cursor *) { cursor: none !important; }
+  :global(html.has-cursor input), :global(html.has-cursor textarea) { cursor: text !important; }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-cursor-root]');
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (root && fine && !reduced) {
+    const dot = root.querySelector<HTMLElement>('.cursor__dot')!;
+    const ring = root.querySelector<HTMLElement>('.cursor__ring')!;
+    const label = root.querySelector<HTMLElement>('.cursor__label')!;
+    let x = innerWidth / 2, y = innerHeight / 2, rx = x, ry = y;
+    let started = false;
+
+    addEventListener('pointermove', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      x = e.clientX; y = e.clientY;
+      if (!started) {
+        started = true; rx = x; ry = y;
+        root.classList.add('is-on');
+        document.documentElement.classList.add('has-cursor');
+      }
+      root.classList.remove('is-hidden');
+      const t = (e.target as Element)?.closest?.('[data-cursor], a, button, [role="button"], label, summary');
+      const text = t?.getAttribute('data-cursor') || '';
+      root.classList.toggle('has-label', !!text);
+      root.classList.toggle('is-link', !!t && !text);
+      label.textContent = text;
+    }, { passive: true });
+    document.addEventListener('pointerleave', () => root.classList.add('is-hidden'));
+    addEventListener('pointerdown', () => root.classList.add('is-down'));
+    addEventListener('pointerup', () => root.classList.remove('is-down'));
+    document.addEventListener('astro:after-swap', () => {
+      root.classList.remove('has-label', 'is-link');
+      if (started) document.documentElement.classList.add('has-cursor');
+    });
+
+    const loop = () => {
+      rx += (x - rx) * 0.18; ry += (y - ry) * 0.18;
+      dot.style.transform = `translate3d(${x}px,${y}px,0)`;
+      ring.style.transform = `translate3d(${rx}px,${ry}px,0)`;
+      requestAnimationFrame(loop);
+    };
+    loop();
+  }
+</script>

@@ -1,0 +1,103 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { getProjects } from '../../lib/utils';
+
+const projects = await getProjects();
+const tech = ['All', 'React', 'Java', 'Python', 'Spring Boot', 'MySQL', 'JavaFX'];
+const count = (t: string) => (t === 'All' ? projects.length : projects.filter((p) => p.data.stack.includes(t)).length);
+---
+
+<Base title="Work" description="Selected projects by Farhan Hameeth — full-stack web apps, HR analytics dashboards and Java desktop systems.">
+  <section class="ph">
+    <div class="wrap">
+      <p class="label">Work · {projects.length} projects</p>
+      <h1 class="display ph__title">
+        <span class="split-line" data-split><span>Selected</span></span>
+        <span class="split-line" data-split style="--d:.1s"><span><span class="serif italic">projects</span><sup class="accent mono">({projects.length})</sup></span></span>
+      </h1>
+      <div class="ph__bar" data-reveal style="--d:.25s">
+        <p class="muted ph__lead">Desktop systems, full-stack platforms and websites — from my first JavaFX app to team-built analytics tools. Filter by tech:</p>
+        <div class="filters" role="toolbar" aria-label="Filter projects by technology" data-filters>
+          {tech.map((t, i) => (
+            <button class:list={['filter', { 'is-on': i === 0 }]} data-filter={t} aria-pressed={i === 0 ? 'true' : 'false'}>
+              {t}<span class="mono">{count(t)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap grid-wrap">
+    <ul class="pgrid" data-grid>
+      {projects.map((p, i) => (
+        <li class="pgrid__item" data-reveal style={`--d:${(i % 2) * 0.1}s`} data-stack={p.data.stack.join('|')}>
+          <ProjectCard project={p} index={i} />
+        </li>
+      ))}
+    </ul>
+    <p class="pgrid__empty muted" data-empty hidden>No projects with that tech yet — but give it time.</p>
+  </section>
+
+  <section class="wrap more">
+    <p class="muted">Plus coursework and experiments on GitHub.</p>
+    <a href="https://github.com/Farhanhameeth?tab=repositories" target="_blank" rel="noopener" class="btn" data-magnetic="0.25">Browse all repositories ↗</a>
+  </section>
+</Base>
+
+<style>
+  .ph { padding-top: 150px; padding-bottom: 3rem; }
+  .ph__title { margin-top: 1.5rem; }
+  .ph__title sup { font-size: 0.14em; vertical-align: top; margin-left: 0.4em; letter-spacing: 0; }
+  .ph__bar { display: flex; justify-content: space-between; align-items: end; gap: 2rem; margin-top: 3rem; flex-wrap: wrap; }
+  .ph__lead { max-width: 44ch; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .filter { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1rem; border-radius: 999px; border: 1px solid var(--line); font-size: 0.92rem; transition: background 0.3s, color 0.3s, border-color 0.3s; }
+  .filter .mono { font-size: 0.65rem; opacity: 0.6; }
+  .filter:hover { border-color: var(--line-2); }
+  .filter.is-on { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+
+  .pgrid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 5vw, 5rem) clamp(1.5rem, 3vw, 3rem); }
+  .pgrid__item:nth-child(even) { margin-top: clamp(0px, 10vw, 140px); }
+  .pgrid__item.is-out { display: none; }
+  .pgrid.is-filtered .pgrid__item { margin-top: 0; }
+  .pgrid__empty { padding: 4rem 0; text-align: center; }
+  .more { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding-block: clamp(80px, 10vw, 140px); }
+  @media (max-width: 800px) {
+    .ph { padding-top: 120px; }
+    .pgrid { grid-template-columns: 1fr; }
+    .pgrid__item:nth-child(even) { margin-top: 0; }
+  }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const bar = document.querySelector('[data-filters]');
+    const grid = document.querySelector<HTMLElement>('[data-grid]');
+    if (!bar || !grid) return;
+    const items = [...grid.querySelectorAll<HTMLElement>('.pgrid__item')];
+    const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+    bar.addEventListener('click', (e) => {
+      const btn = (e.target as Element).closest<HTMLButtonElement>('[data-filter]');
+      if (!btn) return;
+      const f = btn.dataset.filter!;
+      bar.querySelectorAll('[data-filter]').forEach((b) => {
+        b.classList.toggle('is-on', b === btn);
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      const apply = () => {
+        let shown = 0;
+        items.forEach((it) => {
+          const ok = f === 'All' || it.dataset.stack!.split('|').includes(f);
+          it.classList.toggle('is-out', !ok);
+          if (ok) { shown++; it.classList.add('is-in'); }
+        });
+        grid.classList.toggle('is-filtered', f !== 'All');
+        empty.hidden = shown > 0;
+      };
+      const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+      doc.startViewTransition ? doc.startViewTransition(apply) : apply();
+    });
+  });
+</script>

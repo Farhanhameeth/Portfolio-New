@@ -1,0 +1,66 @@
+---
+// Intro curtain shown once per browser session on first load.
+---
+
+<div class="pre" data-pre aria-hidden="true" transition:persist="pre">
+  <div class="pre__inner">
+    <div class="pre__words">
+      <span>Ayubowan</span><span>Vanakkam</span><span>Selamat datang</span><span>Hello</span>
+    </div>
+    <div class="pre__count mono"><span data-pre-n>00</span>%</div>
+  </div>
+  <div class="pre__bar"><span data-pre-bar></span></div>
+</div>
+
+<script is:inline>
+  (function () {
+    var seen = false;
+    try { seen = sessionStorage.getItem('intro') === '1'; } catch (e) {}
+    if (seen || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.documentElement.classList.add('no-intro');
+    } else {
+      document.documentElement.classList.add('intro');
+      try { sessionStorage.setItem('intro', '1'); } catch (e) {}
+    }
+  })();
+</script>
+
+<style>
+  .pre { position: fixed; inset: 0; z-index: 400; background: var(--bg); display: none; flex-direction: column; justify-content: flex-end; padding: var(--gutter); }
+  :global(html.intro) .pre { display: flex; }
+  :global(html.intro.intro-done) .pre { transform: translateY(-100%); transition: transform 1s var(--ease-in-out); }
+  .pre__inner { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; }
+  .pre__words { position: relative; height: 1.1em; overflow: hidden; font-size: clamp(2.5rem, 9vw, 7rem); letter-spacing: -0.05em; line-height: 1.1; font-family: var(--f-serif); font-style: italic; flex: 1; }
+  .pre__words span { position: absolute; left: 0; top: 0; transform: translateY(110%); animation: word 0.55s var(--ease) both; white-space: nowrap; }
+  .pre__words span:nth-child(1) { animation-name: word-mid; animation-delay: 0s; }
+  .pre__words span:nth-child(2) { animation-name: word-mid; animation-delay: 0.45s; }
+  .pre__words span:nth-child(3) { animation-name: word-mid; animation-delay: 0.9s; }
+  .pre__words span:nth-child(4) { animation-name: word; animation-delay: 1.35s; color: var(--accent); }
+  @keyframes word { to { transform: none; } }
+  @keyframes word-mid { 0% { transform: translateY(110%); } 35%, 70% { transform: none; } 100% { transform: translateY(-110%); } }
+  .pre__count { font-size: clamp(1rem, 2vw, 1.4rem); color: var(--muted); }
+  .pre__bar { height: 1px; background: var(--line); margin-top: 1.5rem; }
+  .pre__bar span { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+</style>
+
+<script>
+  const html = document.documentElement;
+  if (html.classList.contains('intro')) {
+    const n = document.querySelector<HTMLElement>('[data-pre-n]');
+    const bar = document.querySelector<HTMLElement>('[data-pre-bar]');
+    const t0 = performance.now();
+    const dur = 1900;
+    const step = (t: number) => {
+      const k = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - k, 3);
+      if (n) n.textContent = String(Math.round(e * 100)).padStart(2, '0');
+      if (bar) bar.style.transform = `scaleX(${e})`;
+      if (k < 1) requestAnimationFrame(step);
+      else {
+        html.classList.add('intro-done');
+        window.dispatchEvent(new Event('intro:done'));
+      }
+    };
+    requestAnimationFrame(step);
+  }
+</script>

@@ -1,0 +1,200 @@
+---
+interface Command { group: string; label: string; href?: string; action?: string; hint?: string; external?: boolean }
+interface Props { commands: Command[]; email: string }
+const { commands, email } = Astro.props;
+---
+
+<div class="cp" data-cp transition:persist="cp" role="dialog" aria-modal="true" aria-label="Command menu" hidden data-commands={JSON.stringify(commands)} data-email={email}>
+  <div class="cp__backdrop" data-cp-close></div>
+  <div class="cp__panel">
+    <div class="cp__search">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="m20 20-4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <input type="text" placeholder="Search pages, projects, posts…  (try “hire”)" aria-label="Search" autocomplete="off" spellcheck="false" data-cp-input role="combobox" aria-expanded="true" aria-controls="cp-list" />
+      <kbd>esc</kbd>
+    </div>
+    <ul class="cp__list" id="cp-list" role="listbox" data-cp-list></ul>
+    <div class="cp__foot mono">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> open</span><span class="cp__foot-r">⌘K / Ctrl K / “/” anywhere</span>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Global: list items are injected by script, which scoped styles can't reach. */
+  .cp { position: fixed; inset: 0; z-index: 150; display: grid; place-items: start center; padding: 14vh 16px 16px; }
+  .cp[hidden] { display: none; }
+  .cp__backdrop { position: absolute; inset: 0; background: color-mix(in srgb, var(--bg) 55%, transparent); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); animation: fade 0.25s var(--ease); }
+  .cp__panel { position: relative; width: min(640px, 100%); background: var(--bg-2); border: 1px solid var(--line-2); border-radius: 20px; box-shadow: var(--shadow); overflow: hidden; animation: pop 0.35s var(--ease); }
+  @keyframes fade { from { opacity: 0; } }
+  @keyframes pop { from { opacity: 0; transform: translateY(-12px) scale(0.97); } }
+  .cp__search { display: flex; align-items: center; gap: 0.8rem; padding: 0 1.1rem; border-bottom: 1px solid var(--line); }
+  .cp__search svg { width: 20px; height: 20px; color: var(--muted); flex: none; }
+  .cp__search input { flex: 1; min-width: 0; height: 62px; background: none; border: 0; outline: 0; color: var(--fg); font: inherit; font-size: 1.05rem; }
+  .cp__search input::placeholder { color: var(--muted); }
+  .cp__list { list-style: none; margin: 0; padding: 0.5rem; max-height: min(52vh, 440px); overflow-y: auto; }
+  .cp__group { font-family: var(--f-mono); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0.8rem 0.8rem 0.35rem; }
+  .cp__item { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0.7rem 0.8rem; border-radius: 12px; cursor: pointer; }
+  .cp__item[aria-selected='true'] { background: var(--bg-3); }
+  .cp__item[aria-selected='true'] .cp__arrow { opacity: 1; transform: none; color: var(--accent); }
+  .cp__label { display: flex; align-items: center; gap: 0.7rem; }
+  .cp__label mark { background: none; color: var(--accent); }
+  .cp__hint { font-family: var(--f-mono); font-size: 0.72rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; }
+  .cp__arrow { opacity: 0; transform: translateX(-4px); transition: 0.2s; }
+  .cp__empty { padding: 2rem; text-align: center; color: var(--muted); }
+  .cp__foot { display: flex; gap: 1.2rem; padding: 0.7rem 1.1rem; border-top: 1px solid var(--line); font-size: 0.64rem; color: var(--muted); }
+  .cp__foot-r { margin-left: auto; }
+  .cp kbd { font-family: var(--f-mono); font-size: 0.66rem; padding: 0.15rem 0.4rem; border-radius: 5px; background: var(--bg-3); border: 1px solid var(--line); margin-right: 0.2rem; }
+  @media (max-width: 600px) { .cp__foot-r { display: none; } }
+
+  .confetti { position: fixed; top: -20px; z-index: 300; width: 10px; height: 14px; pointer-events: none; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translate3d(var(--dx), 110vh, 0) rotate(var(--r)); } }
+</style>
+
+<script>
+  import { toggleTheme } from '../scripts/theme';
+  import { navigate } from 'astro:transitions/client';
+
+  type Cmd = { group: string; label: string; href?: string; action?: string; hint?: string; external?: boolean };
+
+  const el = document.querySelector<HTMLElement>('[data-cp]')!;
+  const input = el.querySelector<HTMLInputElement>('[data-cp-input]')!;
+  const list = el.querySelector<HTMLUListElement>('[data-cp-list]')!;
+  const email = el.dataset.email!;
+  const commands: Cmd[] = JSON.parse(el.dataset.commands || '[]');
+  let results: Cmd[] = [];
+  let sel = 0;
+  let lastFocus: Element | null = null;
+
+  const esc = (s: string) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]!);
+
+  function score(c: Cmd, q: string) {
+    if (!q) return 1;
+    const hay = `${c.label} ${c.group} ${c.hint || ''}`.toLowerCase();
+    if (hay.includes(q)) return 10 - hay.indexOf(q) / 100;
+    // Loose subsequence match: "lms" → "Library Management System"
+    let i = 0;
+    for (const ch of hay) if (ch === q[i]) i++;
+    return i === q.length ? 1 : 0;
+  }
+
+  function highlight(label: string, q: string) {
+    const i = q ? label.toLowerCase().indexOf(q) : -1;
+    if (i < 0) return esc(label);
+    return esc(label.slice(0, i)) + '<mark>' + esc(label.slice(i, i + q.length)) + '</mark>' + esc(label.slice(i + q.length));
+  }
+
+  function render() {
+    const q = input.value.trim().toLowerCase();
+    results = commands.map((c) => ({ c, s: score(c, q) })).filter((r) => r.s > 0).sort((a, b) => (q ? b.s - a.s : 0)).map((r) => r.c);
+    sel = Math.min(sel, Math.max(0, results.length - 1));
+    if (!results.length) { list.innerHTML = `<li class="cp__empty">Nothing for “${esc(q)}”. Try “projects” or “blog”.</li>`; return; }
+    let html = '';
+    let group = '';
+    results.forEach((c, i) => {
+      if (c.group !== group) { group = c.group; html += `<li class="cp__group" role="presentation">${esc(group)}</li>`; }
+      html += `<li class="cp__item" role="option" id="cp-${i}" data-i="${i}" aria-selected="${i === sel}">
+        <span class="cp__label"><span class="cp__arrow">→</span>${highlight(c.label, q)}</span>
+        <span class="cp__hint">${esc(c.hint || '')}</span></li>`;
+    });
+    list.innerHTML = html;
+    input.setAttribute('aria-activedescendant', `cp-${sel}`);
+    list.querySelector('[aria-selected="true"]')?.scrollIntoView({ block: 'nearest' });
+  }
+
+  function open() {
+    lastFocus = document.activeElement;
+    el.hidden = false;
+    input.value = '';
+    sel = 0;
+    render();
+    requestAnimationFrame(() => input.focus());
+  }
+  function close() {
+    el.hidden = true;
+    (lastFocus as HTMLElement | null)?.focus?.();
+  }
+
+  function confetti() {
+    const colors = ['#ff5b2e', '#f0ede6', '#ffb02e', '#7ee787', '#6aa7ff'];
+    for (let i = 0; i < 140; i++) {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = `${Math.random() * 100}vw`;
+      c.style.background = colors[i % colors.length];
+      c.style.setProperty('--dx', `${(Math.random() - 0.5) * 300}px`);
+      c.style.setProperty('--r', `${Math.random() * 1440 - 720}deg`);
+      c.style.animationDuration = `${2 + Math.random() * 2.5}s`;
+      c.style.animationDelay = `${Math.random() * 0.4}s`;
+      if (Math.random() > 0.5) c.style.borderRadius = '50%';
+      document.body.appendChild(c);
+      setTimeout(() => c.remove(), 5200);
+    }
+  }
+
+  async function run(c: Cmd) {
+    close();
+    if (c.href) {
+      if (c.external) window.open(c.href, '_blank', 'noopener');
+      else navigate(c.href);
+      return;
+    }
+    if (c.action === 'theme') toggleTheme();
+    if (c.action === 'copy-email') { try { await navigator.clipboard.writeText(email); } catch {} toast(`Copied ${email}`); }
+    if (c.action === 'hire') {
+      confetti();
+      toast('Excellent decision. Opening your mail app…');
+      setTimeout(() => { location.href = `mailto:${email}?subject=${encodeURIComponent("Let's work together")}`; }, 1400);
+    }
+  }
+
+  function toast(msg: string) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.setAttribute('role', 'status');
+    Object.assign(t.style, { position: 'fixed', left: '50%', bottom: '28px', transform: 'translateX(-50%)', zIndex: '300', padding: '0.8rem 1.2rem', borderRadius: '999px', background: 'var(--fg)', color: 'var(--bg)', fontSize: '0.9rem', boxShadow: 'var(--shadow)' });
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2600);
+  }
+
+  input.addEventListener('input', () => { sel = 0; render(); });
+  list.addEventListener('pointermove', (e) => {
+    const li = (e.target as Element).closest<HTMLElement>('.cp__item');
+    if (li && Number(li.dataset.i) !== sel) { sel = Number(li.dataset.i); render(); }
+  });
+  list.addEventListener('click', (e) => {
+    const li = (e.target as Element).closest<HTMLElement>('.cp__item');
+    if (li) run(results[Number(li.dataset.i)]);
+  });
+  el.addEventListener('click', (e) => { if ((e.target as Element).hasAttribute('data-cp-close')) close(); });
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); sel = (sel + 1) % Math.max(1, results.length); render(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); sel = (sel - 1 + results.length) % Math.max(1, results.length); render(); }
+    else if (e.key === 'Enter' && results[sel]) { e.preventDefault(); run(results[sel]); }
+    else if (e.key === 'Escape') { e.preventDefault(); close(); }
+    else if (e.key === 'Tab') { e.preventDefault(); input.focus(); }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    const typing = (e.target as Element)?.closest?.('input, textarea, [contenteditable]');
+    if ((e.key === 'k' && (e.metaKey || e.ctrlKey)) || (e.key === '/' && !typing)) {
+      e.preventDefault();
+      el.hidden ? open() : close();
+    } else if (e.key.toLowerCase() === 't' && !typing && !e.metaKey && !e.ctrlKey && !e.altKey && el.hidden) {
+      toggleTheme();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    if ((e.target as Element).closest?.('[data-open-palette]')) open();
+  });
+
+  // Konami code → confetti.
+  const konami = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+  let k = 0;
+  document.addEventListener('keydown', (e) => {
+    k = e.key === konami[k] ? k + 1 : e.key === konami[0] ? 1 : 0;
+    if (k === konami.length) { k = 0; confetti(); toast('↑↑↓↓←→←→BA — you found it.'); }
+  });
+
+  console.log('%cHey, curious one 👋', 'font: 600 20px system-ui; color: #ff5b2e');
+  console.log("%cYou're reading the console of a portfolio. We should probably talk → " + email, 'font: 14px system-ui');
+</script>

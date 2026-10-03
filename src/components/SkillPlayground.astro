@@ -1,0 +1,135 @@
+---
+import { skills } from '../data/site';
+const groups = [...new Set(skills.map((s) => s.group))];
+---
+
+<div class="sp" data-sp>
+  <div class="sp__box" data-sp-box data-cursor="Drag">
+    {skills.map((s) => (
+      <span class={`sp__pill sp__pill--${s.group.toLowerCase()}`} data-sp-pill data-group={s.group}>
+        {s.name}
+        <i class="sp__lvl" aria-hidden="true">{'●'.repeat(s.level)}{'○'.repeat(4 - s.level)}</i>
+      </span>
+    ))}
+    <p class="sp__hint mono muted">Grab a skill and throw it ↓</p>
+  </div>
+  <div class="sp__legend mono">
+    {groups.map((g) => <span class={`sp__key sp__pill--${g.toLowerCase()}`}><i></i>{g}</span>)}
+    <button class="sp__shake" data-sp-shake>Shake ↯</button>
+  </div>
+</div>
+
+<style>
+  .sp__box { position: relative; height: 460px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; background: radial-gradient(circle at 50% 120%, var(--accent-soft), transparent 60%), var(--bg-2); touch-action: pan-y; user-select: none; }
+  .sp__pill { position: absolute; left: 0; top: 0; display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.2rem; border-radius: 999px; font-size: 1.05rem; font-weight: 500; white-space: nowrap; background: var(--fg); color: var(--bg); will-change: transform; cursor: grab; }
+  .sp__pill:active { cursor: grabbing; }
+  .sp__lvl { font-style: normal; font-size: 0.5rem; letter-spacing: 0.1em; opacity: 0.6; }
+  .sp__pill--backend { background: var(--accent); color: var(--accent-ink); }
+  .sp__pill--frontend { background: var(--fg); color: var(--bg); }
+  .sp__pill--data { background: transparent; color: var(--fg); box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .sp__pill--tools { background: var(--bg-3); color: var(--fg); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .sp__hint { position: absolute; left: 50%; top: 1.2rem; transform: translateX(-50%); font-size: 0.68rem; pointer-events: none; }
+  .sp__legend { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center; margin-top: 1rem; font-size: 0.7rem; color: var(--muted); }
+  .sp__key { display: inline-flex; align-items: center; gap: 0.5rem; background: none !important; box-shadow: none !important; color: var(--muted) !important; }
+  .sp__key i { width: 12px; height: 12px; border-radius: 50%; }
+  .sp__key.sp__pill--backend i { background: var(--accent); }
+  .sp__key.sp__pill--frontend i { background: var(--fg); }
+  .sp__key.sp__pill--data i { box-shadow: inset 0 0 0 1.5px var(--fg); }
+  .sp__key.sp__pill--tools i { background: var(--bg-3); box-shadow: inset 0 0 0 1px var(--line-2); }
+  .sp__shake { margin-left: auto; padding: 0.4rem 0.9rem; border-radius: 999px; border: 1px solid var(--line-2); font-family: var(--f-mono); font-size: 0.7rem; text-transform: uppercase; }
+  .sp__shake:hover { background: var(--fg); color: var(--bg); }
+
+  /* Static layout until physics kicks in (and for reduced motion) */
+  .sp:not(.is-live) .sp__box { display: flex; flex-wrap: wrap; gap: 0.6rem; align-content: flex-end; padding: 1.2rem; height: auto; min-height: 260px; }
+  .sp:not(.is-live) .sp__pill { position: static; }
+  @media (max-width: 700px) { .sp__box { height: 520px; } .sp__pill { font-size: 0.92rem; padding: 0.6rem 1rem; } }
+</style>
+
+<script>
+  let stop: (() => void) | null = null;
+
+  async function start(root: HTMLElement) {
+    const Matter = (await import('matter-js')).default;
+    const { Engine, Bodies, Composite, Mouse, MouseConstraint, Body, Runner } = Matter;
+    const box = root.querySelector<HTMLElement>('[data-sp-box]')!;
+    const pills = [...root.querySelectorAll<HTMLElement>('[data-sp-pill]')];
+
+    // Measure pills in their static layout before going live.
+    const sizes = pills.map((p) => ({ w: p.offsetWidth, h: p.offsetHeight }));
+    root.classList.add('is-live');
+    const W = box.clientWidth, H = box.clientHeight;
+
+    const engine = Engine.create({ gravity: { x: 0, y: 1.1 } });
+    const wall = { isStatic: true, render: { visible: false } };
+    const t = 200;
+    Composite.add(engine.world, [
+      Bodies.rectangle(W / 2, H + t / 2, W * 3, t, wall),
+      Bodies.rectangle(-t / 2, H / 2, t, H * 4, wall),
+      Bodies.rectangle(W + t / 2, H / 2, t, H * 4, wall),
+      Bodies.rectangle(W / 2, -H * 1.5 - t / 2, W * 3, t, wall),
+    ]);
+
+    const bodies = pills.map((_, i) => {
+      const { w, h } = sizes[i];
+      const b = Bodies.rectangle(
+        w / 2 + Math.random() * Math.max(1, W - w),
+        -Math.random() * H - h,
+        w, h,
+        { chamfer: { radius: h / 2 }, restitution: 0.55, friction: 0.08, frictionAir: 0.012, density: 0.002 },
+      );
+      Body.setAngle(b, (Math.random() - 0.5) * 0.8);
+      return b;
+    });
+    Composite.add(engine.world, bodies);
+
+    // Touch screens: matter's mouse handler blocks page scrolling, so tapping shakes instead.
+    const touch = !matchMedia('(hover: hover) and (pointer: fine)').matches;
+    let mouse: Matter.Mouse | null = null;
+    if (!touch) {
+      mouse = Mouse.create(box);
+      // Let the page keep scrolling with the wheel while over the box.
+      const m = mouse as unknown as { element: HTMLElement; mousewheel: EventListener };
+      m.element.removeEventListener('wheel', m.mousewheel);
+      m.element.removeEventListener('mousewheel', m.mousewheel);
+      m.element.removeEventListener('DOMMouseScroll', m.mousewheel);
+      Composite.add(engine.world, MouseConstraint.create(engine, { mouse, constraint: { stiffness: 0.2, damping: 0.1 } }));
+    } else {
+      const hint = root.querySelector('.sp__hint');
+      if (hint) hint.textContent = 'Tap to shake things up';
+    }
+
+    const runner = Runner.create();
+    Runner.run(runner, engine);
+
+    let raf = 0;
+    const draw = () => {
+      bodies.forEach((b, i) => {
+        const { w, h } = sizes[i];
+        pills[i].style.transform = `translate(${b.position.x - w / 2}px, ${b.position.y - h / 2}px) rotate(${b.angle}rad)`;
+      });
+      raf = requestAnimationFrame(draw);
+    };
+    draw();
+
+    const shake = () => bodies.forEach((b) => Body.setVelocity(b, { x: (Math.random() - 0.5) * 22, y: -12 - Math.random() * 14 }));
+    root.querySelector('[data-sp-shake]')?.addEventListener('click', shake);
+    if (touch) box.addEventListener('click', shake);
+
+    stop = () => {
+      cancelAnimationFrame(raf);
+      Runner.stop(runner);
+      Engine.clear(engine);
+      if (mouse) Mouse.clearSourceEvents(mouse);
+    };
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector<HTMLElement>('[data-sp]');
+    if (!root || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { io.disconnect(); start(root); }
+    }, { threshold: 0.35 });
+    io.observe(root);
+    document.addEventListener('astro:before-swap', () => { io.disconnect(); stop?.(); stop = null; }, { once: true });
+  });
+</script>

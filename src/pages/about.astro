@@ -1,0 +1,280 @@
+---
+import Base from '../layouts/Base.astro';
+import SkillPlayground from '../components/SkillPlayground.astro';
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { site, timeline, grades, education, certifications, languages, strengths, skills } from '../data/site';
+
+const uom = certifications.filter((c) => c.issuer === 'University of Moratuwa');
+const hasCV = existsSync(join(process.cwd(), 'public', site.cvPath));
+const hr = certifications.filter((c) => c.issuer === 'HackerRank');
+---
+
+<Base title="About" description="The story so far — Farhan Hameeth, full-stack developer and Computer Science undergraduate at IIT, Colombo.">
+  <!-- ───────── Header ───────── -->
+  <section class="ah">
+    <div class="wrap ah__grid">
+      <div class="ah__text">
+        <p class="label">About</p>
+        <h1 class="display ah__title">
+          <span class="split-line" data-split><span>Curious</span></span>
+          <span class="split-line" data-split style="--d:.1s"><span>by <span class="serif italic accent">default.</span></span></span>
+        </h1>
+        <div class="ah__body" data-reveal style="--d:.3s">
+          <p class="lead">I'm Farhan — a Computer Science undergraduate at the Informatics Institute of Technology in Colombo, studying for a BSc (Hons) awarded by the University of Westminster.</p>
+          <p>My journey into software started with a simple question — <em>how does this actually work?</em> — and turned into a habit of building things to find out. I started with Java desktop apps, learned to love clean layered architecture and good database design, then went full-stack with Spring Boot, React and FastAPI.</p>
+          <p>Outside the editor I've spent years volunteering with the Leo Club, which taught me as much about leadership and teamwork as any module has. I speak English, Sinhala and Malay, and I'm always up for a hard problem and a good team.</p>
+          <div class="ah__cta">
+            <a href="/contact" class="btn btn--solid" data-magnetic="0.25">Get in touch</a>
+            {hasCV && <a href={site.cvPath} class="btn" download data-magnetic="0.25">Download CV ↓</a>}
+          </div>
+        </div>
+      </div>
+      <figure class="ah__photo" data-reveal style="--d:.2s">
+        <div class="ah__frame" data-tilt="8">
+          <img src="/images/farhan.webp" alt="Farhan Hameeth in a brown blazer, smiling" width="900" height="1125" loading="eager" />
+        </div>
+        <figcaption class="mono muted">
+          <span>Farhan Hameeth</span><span>{site.location}</span>
+        </figcaption>
+        <div class="ah__badge" aria-hidden="true">
+          <svg viewBox="0 0 200 200"><defs><path id="circ" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0" /></defs><text><textPath href="#circ">FULL-STACK DEVELOPER • CS @ IIT • COLOMBO • </textPath></text></svg>
+          <span>✦</span>
+        </div>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ───────── Timeline ───────── -->
+  <section class="section tl" data-tl>
+    <div class="wrap tl__grid">
+      <div class="tl__aside">
+        <p class="label">( 01 ) — The story so far</p>
+        <div class="tl__year" aria-hidden="true"><span data-tl-year>{timeline[0].year}</span></div>
+        <div class="tl__rail"><span data-tl-bar></span></div>
+      </div>
+      <ol class="tl__list">
+        {timeline.map((t) => (
+          <li class="tl__item" data-tl-item data-year={t.year}>
+            <span class="mono accent">{t.year}</span>
+            <h3 class="h3">{t.title}</h3>
+            <p class="muted">{t.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ───────── Skills ───────── -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">( 02 ) — Toolbox</p>
+        <h2 class="h2">The stack I <span class="serif italic">reach for.</span></h2>
+      </div>
+      <SkillPlayground />
+      <ul class="sr-only">{skills.map((s) => <li>{s.name} ({s.group})</li>)}</ul>
+    </div>
+  </section>
+
+  <!-- ───────── Grades ───────── -->
+  <section class="section">
+    <div class="wrap two">
+      <div>
+        <p class="label">( 03 ) — Report card</p>
+        <h2 class="h2" style="margin-top:1.2rem">Year one,<br /><span class="serif italic">in numbers.</span></h2>
+        <p class="muted" style="margin-top:1.5rem;max-width:38ch">Highlights from my first year of BSc (Hons) Computer Science at IIT. Scores out of 100.</p>
+      </div>
+      <ul class="bars">
+        {grades.map((g, i) => (
+          <li class="bars__row" data-reveal style={`--d:${i * 0.08}s; --v:${g.score / 100}`}>
+            <div class="bars__top"><span>{g.module}</span><span class="mono"><span data-count={g.score}>0</span>/100</span></div>
+            <div class="bars__track"><span></span></div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── Education ───────── -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">( 04 ) — Education</p>
+        <h2 class="h2">Where I <span class="serif italic">learned.</span></h2>
+      </div>
+      <ul class="edu">
+        {education.map((e, i) => (
+          <li class="edu__row" data-reveal style={`--d:${i * 0.06}s`}>
+            <span class="mono muted">{e.period}</span>
+            <div>
+              <h3 class="edu__title">{e.title}</h3>
+              <p class="muted">{e.place}{e.note && <> · {e.note}</>}</p>
+            </div>
+            <span class="edu__n mono">0{i + 1}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ───────── Certifications ───────── -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">( 05 ) — Certifications</p>
+        <h2 class="h2"><span data-count={certifications.length}>0</span> certificates <span class="serif italic">& counting.</span></h2>
+      </div>
+      <div class="certs">
+        <div class="certs__col" data-reveal>
+          <p class="certs__issuer"><span class="mono muted">Issuer</span>University of Moratuwa</p>
+          <ul>{uom.map((c) => <li><span class="accent">✦</span>{c.name}</li>)}</ul>
+        </div>
+        <div class="certs__col" data-reveal style="--d:.1s">
+          <p class="certs__issuer"><span class="mono muted">Issuer</span>HackerRank</p>
+          <ul>{hr.map((c) => <li><span class="accent">✦</span>{c.name}</li>)}</ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── Beyond code ───────── -->
+  <section class="section">
+    <div class="wrap">
+      <div class="sec-head">
+        <p class="label">( 06 ) — Beyond the code</p>
+        <h2 class="h2">The human <span class="serif italic">bits.</span></h2>
+      </div>
+      <div class="beyond">
+        <article class="bcard" data-reveal data-tilt="4">
+          <p class="mono muted">Community</p>
+          <h3 class="h3">Leo Club volunteer</h3>
+          <p class="muted">Leo Club of Asian Grammar School (2018–19) and Leo Club of Kottawa Central Golden City — Omega (2020–21). Service projects, events and a crash course in leadership.</p>
+        </article>
+        <article class="bcard bcard--lang" data-reveal data-tilt="4" style="--d:.08s">
+          <p class="mono muted">Languages</p>
+          <ul class="langs">
+            {languages.map((l) => (
+              <li><span class="langs__native serif italic">{l.native}</span><span class="mono muted">{l.name}</span></li>
+            ))}
+          </ul>
+        </article>
+        <article class="bcard" data-reveal data-tilt="4" style="--d:.16s">
+          <p class="mono muted">Strengths</p>
+          <ul class="tags">{strengths.map((s) => <li class="chip">{s}</li>)}</ul>
+        </article>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ah { padding-top: 150px; }
+  .ah__grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+  .ah__title { margin-top: 1.5rem; font-size: clamp(3.5rem, 10vw, 9.5rem); }
+  .ah__body { display: grid; gap: 1.2rem; margin-top: 2.5rem; max-width: 60ch; color: var(--fg-2); }
+  .ah__cta { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 1rem; }
+  .ah__body em { font-family: var(--f-serif); font-size: 1.15em; color: var(--fg); }
+  .ah__photo { position: relative; margin: 0; perspective: 1000px; }
+  .ah__frame { border-radius: 28px; overflow: hidden; background: linear-gradient(160deg, var(--accent), color-mix(in srgb, var(--accent) 40%, var(--bg-2))); transform: rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform 0.5s var(--ease); aspect-ratio: 4 / 5; }
+  .ah__frame img { width: 100%; height: 100%; object-fit: cover; object-position: top; transform: translateY(4%) scale(1.02); }
+  .ah__photo figcaption { display: flex; justify-content: space-between; margin-top: 0.9rem; font-size: 0.68rem; }
+  .ah__badge { position: absolute; left: -48px; bottom: 60px; width: 130px; height: 130px; display: grid; place-items: center; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); }
+  .ah__badge svg { position: absolute; inset: 0; animation: spin 18s linear infinite; }
+  .ah__badge text { font-family: var(--f-mono); font-size: 13.5px; letter-spacing: 2.5px; fill: var(--fg); }
+  .ah__badge > span { color: var(--accent); font-size: 1.6rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @media (max-width: 900px) {
+    .ah { padding-top: 120px; }
+    .ah__grid { grid-template-columns: 1fr; }
+    .ah__photo { max-width: 460px; }
+    .ah__badge { left: auto; right: -10px; bottom: -30px; width: 110px; height: 110px; }
+  }
+
+  .sec-head { display: grid; gap: 1.2rem; margin-bottom: 3rem; }
+
+  /* Timeline */
+  .tl__grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(2rem, 6vw, 6rem); }
+  .tl__aside { position: sticky; top: 110px; align-self: start; display: grid; gap: 1.5rem; }
+  .tl__year { font-size: clamp(6rem, 17vw, 16rem); line-height: 0.8; letter-spacing: -0.07em; font-weight: 500; overflow: hidden; }
+  .tl__year span { display: inline-block; transition: transform 0.5s var(--ease), opacity 0.5s; }
+  .tl__year span.is-swap { transform: translateY(-30%); opacity: 0; }
+  .tl__rail { height: 2px; background: var(--line); position: relative; }
+  .tl__rail span { position: absolute; inset: 0; background: var(--accent); transform-origin: left; transform: scaleX(0); transition: transform 0.4s var(--ease); }
+  .tl__list { list-style: none; padding: 0; margin: 0; }
+  .tl__item { display: grid; gap: 0.7rem; padding: 2.2rem 0 2.2rem 2rem; border-left: 1px solid var(--line); position: relative; opacity: 0.35; transition: opacity 0.5s var(--ease); }
+  .tl__item::before { content: ''; position: absolute; left: -6px; top: 2.6rem; width: 11px; height: 11px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line-2); transition: background 0.4s, border-color 0.4s, transform 0.4s; }
+  .tl__item.is-active { opacity: 1; }
+  .tl__item.is-active::before { background: var(--accent); border-color: var(--accent); transform: scale(1.3); }
+  .tl__item p { max-width: 52ch; }
+  @media (max-width: 900px) {
+    .tl__grid { grid-template-columns: 1fr; }
+    .tl__aside { position: sticky; top: 76px; z-index: 2; background: var(--bg); padding-block: 0.8rem; gap: 0.6rem; }
+    .tl__year { font-size: 4.5rem; }
+  }
+
+  /* Grades */
+  .two { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(2rem, 6vw, 6rem); align-items: end; }
+  .bars { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.6rem; }
+  .bars__top { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem; font-size: 1.02rem; }
+  .bars__track { height: 10px; border-radius: 99px; background: var(--bg-3); overflow: hidden; }
+  .bars__track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 50%, var(--fg)), var(--accent)); transform-origin: left; transform: scaleX(0); transition: transform 1.6s var(--ease) calc(var(--d, 0s) + 0.2s); }
+  .bars__row.is-in .bars__track span { transform: scaleX(var(--v)); }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } }
+
+  /* Education */
+  .edu { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+  .edu__row { display: grid; grid-template-columns: 200px 1fr auto; gap: 2rem; align-items: baseline; padding: 2rem 0; border-bottom: 1px solid var(--line); transition: padding 0.5s var(--ease); }
+  .edu__row:hover { padding-left: 1rem; }
+  .edu__title { font-size: clamp(1.3rem, 2.5vw, 2.1rem); letter-spacing: -0.035em; margin-bottom: 0.3rem; }
+  .edu__n { color: var(--accent); }
+  @media (max-width: 700px) { .edu__row { grid-template-columns: 1fr auto; gap: 0.6rem; } .edu__row > div { grid-column: 1 / -1; grid-row: 2; } }
+
+  /* Certs */
+  .certs { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .certs__col { padding: 2rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); }
+  .certs__issuer { display: grid; gap: 0.4rem; font-size: 1.5rem; letter-spacing: -0.03em; padding-bottom: 1.2rem; border-bottom: 1px solid var(--line); }
+  .certs__issuer .mono { font-size: 0.66rem; }
+  .certs ul { list-style: none; padding: 0; margin: 1rem 0 0; display: grid; }
+  .certs li { display: flex; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px dashed var(--line); transition: transform 0.4s var(--ease), color 0.3s; }
+  .certs li:hover { transform: translateX(8px); color: var(--accent); }
+  .certs li:last-child { border-bottom: 0; }
+  @media (max-width: 800px) { .certs { grid-template-columns: 1fr; } .certs__col { padding: 1.4rem; } }
+
+  /* Beyond */
+  .beyond { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; perspective: 1200px; }
+  .bcard { padding: 2rem; border-radius: var(--radius); border: 1px solid var(--line); background: var(--bg-2); display: grid; gap: 1rem; align-content: start; transform: rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transition: transform 0.5s var(--ease), opacity 1s var(--ease); min-height: 280px; }
+  .bcard--lang { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .bcard--lang .muted { color: color-mix(in srgb, var(--accent-ink) 65%, transparent); }
+  .langs { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+  .langs li { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid color-mix(in srgb, var(--accent-ink) 25%, transparent); padding-bottom: 0.5rem; }
+  .langs__native { font-size: 2.1rem; line-height: 1.1; }
+  .tags { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  @media (max-width: 900px) { .beyond { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const root = document.querySelector('[data-tl]');
+    if (!root) return;
+    const yearEl = root.querySelector<HTMLElement>('[data-tl-year]')!;
+    const bar = root.querySelector<HTMLElement>('[data-tl-bar]')!;
+    const items = [...root.querySelectorAll<HTMLElement>('[data-tl-item]')];
+    let current = '';
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (!e.isIntersecting) return;
+        const el = e.target as HTMLElement;
+        items.forEach((i) => i.classList.toggle('is-active', i === el));
+        bar.style.transform = `scaleX(${(items.indexOf(el) + 1) / items.length})`;
+        const y = el.dataset.year!;
+        if (y === current) return;
+        current = y;
+        yearEl.classList.add('is-swap');
+        setTimeout(() => { yearEl.textContent = y; yearEl.classList.remove('is-swap'); }, 220);
+      });
+    }, { rootMargin: '-45% 0px -45% 0px' });
+    items.forEach((i) => io.observe(i));
+    document.addEventListener('astro:before-swap', () => io.disconnect(), { once: true });
+  });
+</script>

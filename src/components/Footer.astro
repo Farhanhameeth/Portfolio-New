@@ -1,0 +1,69 @@
+---
+import { site, socials, nav } from '../data/site';
+const year = new Date().getFullYear();
+---
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot__cta">
+      <p class="label">Have an idea?</p>
+      <a href="/contact" class="foot__big" data-cursor="Say hi">
+        <span class="foot__line"><span>Let's build</span></span>
+        <span class="foot__line"><span class="serif italic accent">something</span> <span>good.</span></span>
+        <svg class="foot__arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      </a>
+    </div>
+
+    <div class="foot__grid">
+      <div>
+        <p class="mono muted">Email</p>
+        <button class="foot__email" data-copy={site.email} data-cursor="Copy">
+          <span data-copy-label>{site.email}</span>
+        </button>
+      </div>
+      <div>
+        <p class="mono muted">Sitemap</p>
+        <ul>{nav.map((n) => <li><a class="link" href={n.href}>{n.label}</a></li>)}<li><a class="link" href="/rss.xml">RSS</a></li></ul>
+      </div>
+      <div>
+        <p class="mono muted">Elsewhere</p>
+        <ul>{socials.map((s) => <li><a class="link" href={s.href} target="_blank" rel="noopener">{s.label} ↗</a></li>)}</ul>
+      </div>
+      <div>
+        <p class="mono muted">Local time</p>
+        <p class="foot__time"><span data-clock>--:--:--</span> <span class="muted">Colombo</span></p>
+      </div>
+    </div>
+
+    <div class="foot__base mono muted">
+      <span>© {year} {site.name}</span>
+      <span>Designed & built in Colombo · Press <kbd>⌘K</kbd></span>
+      <a href="#main" class="link">Back to top ↑</a>
+    </div>
+  </div>
+  <div class="foot__wordmark" aria-hidden="true">Farhan Hameeth</div>
+</footer>
+
+<style>
+  .foot { position: relative; border-top: 1px solid var(--line); padding-top: clamp(70px, 10vw, 140px); overflow: hidden; }
+  .foot__cta { margin-bottom: clamp(60px, 8vw, 110px); }
+  .foot__cta .label { display: flex; }
+  .foot__big { position: relative; display: inline-block; margin-top: 1.2rem; font-size: clamp(2.8rem, 9vw, 8.5rem); line-height: 0.92; letter-spacing: -0.055em; }
+  .foot__line { display: block; }
+  .foot__line .serif { letter-spacing: -0.03em; }
+  .foot__arrow { position: absolute; right: -0.9em; top: 0.05em; width: 0.7em; height: 0.7em; color: var(--accent); transition: transform 0.6s var(--ease); }
+  .foot__big:hover .foot__arrow { transform: translate(0.12em, -0.12em) rotate(45deg); }
+  .foot__grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1fr; gap: 2rem; padding-block: 2.5rem; border-top: 1px solid var(--line); }
+  .foot__grid ul { list-style: none; margin: 0.8rem 0 0; padding: 0; display: grid; gap: 0.35rem; }
+  .foot__email { margin-top: 0.8rem; font-size: clamp(1.1rem, 2vw, 1.6rem); letter-spacing: -0.02em; text-align: left; border-bottom: 1px solid var(--line-2); padding-bottom: 0.2rem; transition: color 0.3s, border-color 0.3s; word-break: break-all; }
+  .foot__email:hover { color: var(--accent); border-color: var(--accent); }
+  .foot__time { margin-top: 0.8rem; font-family: var(--f-mono); font-size: 1.1rem; }
+  .foot__base { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 1.5rem 0; border-top: 1px solid var(--line); font-size: 0.7rem; }
+  kbd { font-family: var(--f-mono); padding: 0.1rem 0.35rem; border-radius: 5px; border: 1px solid var(--line); }
+  .foot__wordmark { font-size: 15.5vw; line-height: 0.75; letter-spacing: -0.07em; font-weight: 600; white-space: nowrap; text-align: center; color: transparent; -webkit-text-stroke: 1px var(--line-2); margin-top: 1rem; transform: translateY(14%); user-select: none; }
+  @media (max-width: 900px) {
+    .foot__grid { grid-template-columns: 1fr 1fr; }
+    .foot__grid > :first-child { grid-column: 1 / -1; }
+    .foot__arrow { display: none; }
+  }
+</style>

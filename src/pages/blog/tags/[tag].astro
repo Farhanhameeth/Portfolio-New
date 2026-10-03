@@ -1,0 +1,32 @@
+---
+import Base from '../../../layouts/Base.astro';
+import PostList from '../../../components/PostList.astro';
+import { getPosts, slugify } from '../../../lib/utils';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+  return tags.map((tag) => ({
+    params: { tag: slugify(tag) },
+    props: { tag, posts: posts.filter((p) => p.data.tags.includes(tag)) },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+---
+
+<Base title={`#${tag}`} description={`Posts tagged #${tag} by Farhan Hameeth.`}>
+  <section class="th wrap">
+    <a href="/blog" class="mono muted link">← All posts</a>
+    <p class="label" style="margin-top:2.5rem">Tag · {posts.length} {posts.length === 1 ? 'post' : 'posts'}</p>
+    <h1 class="display th__title"><span class="split-line" data-split><span><span class="accent">#</span>{tag}</span></span></h1>
+  </section>
+  <section class="wrap th__list"><PostList posts={posts} /></section>
+</Base>
+
+<style>
+  .th { padding-top: 150px; padding-bottom: 3rem; }
+  .th__title { margin-top: 1.5rem; }
+  .th__list { padding-bottom: clamp(80px, 10vw, 140px); }
+  @media (max-width: 800px) { .th { padding-top: 120px; } }
+</style>

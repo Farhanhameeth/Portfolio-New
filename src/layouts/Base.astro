@@ -1,0 +1,111 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import { getCollection } from 'astro:content';
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import Cursor from '../components/Cursor.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+import Preloader from '../components/Preloader.astro';
+import { site, nav, socials } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+}
+
+const { title, description = site.description, image = '/og.png', type = 'website' } = Astro.props;
+const fullTitle = title ? `${title} — ${site.name}` : site.title;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+
+const projects = (await getCollection('projects')).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+// Everything the ⌘K palette can jump to.
+const commands = [
+  ...nav.map((n) => ({ group: 'Pages', label: n.label, href: n.href, hint: n.href })),
+  ...projects.map((p) => ({ group: 'Projects', label: p.data.title, href: `/projects/${p.id}`, hint: p.data.stack.slice(0, 2).join(' · ') })),
+  ...posts.map((p) => ({ group: 'Writing', label: p.data.title, href: `/blog/${p.id}`, hint: p.data.date.toISOString().slice(0, 10) })),
+  ...socials.map((s) => ({ group: 'Elsewhere', label: s.label, href: s.href, hint: s.handle, external: true })),
+  { group: 'Actions', label: 'Copy email address', action: 'copy-email', hint: site.email },
+  { group: 'Actions', label: 'Toggle light / dark', action: 'theme', hint: 'T' },
+  { group: 'Actions', label: 'Hire Farhan', action: 'hire', hint: '🎉' },
+];
+---
+
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${site.name} — Writing`} href="/rss.xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="theme-color" content="#0b0b0c" />
+    <meta name="author" content={site.name} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: site.name,
+      jobTitle: site.role,
+      url: Astro.site?.toString(),
+      email: `mailto:${site.email}`,
+      address: { '@type': 'PostalAddress', addressLocality: 'Colombo', addressCountry: 'LK' },
+      alumniOf: 'Informatics Institute of Technology',
+      sameAs: socials.map((s) => s.href),
+    })} />
+
+    <script is:inline>
+      // Apply the saved theme before first paint so there's no flash.
+      (function () {
+        var t = null;
+        try { t = localStorage.getItem('theme'); } catch (e) {}
+        if (!t) t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+        document.documentElement.dataset.theme = t;
+      })();
+      // Client-side navigation replaces <html> attributes; carry the theme and cursor state over.
+      document.addEventListener('astro:before-swap', function (e) {
+        var root = e.newDocument.documentElement;
+        root.dataset.theme = document.documentElement.dataset.theme;
+        if (document.documentElement.classList.contains('has-cursor')) root.classList.add('has-cursor');
+      });
+    </script>
+    <ClientRouter fallback="swap" />
+  </head>
+  <body>
+    <Preloader />
+    <a class="sr-only" href="#main">Skip to content</a>
+    <Nav />
+    <main id="main" transition:name="main">
+      <slot />
+    </main>
+    <Footer />
+    <Cursor />
+    <CommandPalette commands={commands} email={site.email} />
+    <div class="grain" aria-hidden="true" transition:persist="grain"></div>
+
+    <script>
+      import { initInteractions } from '../scripts/interactions';
+      document.addEventListener('astro:page-load', initInteractions);
+    </script>
+  </body>
+</html>

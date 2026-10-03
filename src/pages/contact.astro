@@ -1,0 +1,145 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, socials } from '../data/site';
+
+// Optional: set PUBLIC_FORM_ENDPOINT (e.g. a Formspree or Web3Forms URL) to receive
+// messages directly. Without it, the form opens the visitor's email app instead.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
+const topics = ['an internship', 'a freelance project', 'a full-time role', 'a collaboration', 'just saying hi'];
+---
+
+<Base title="Contact" description="Get in touch with Farhan Hameeth — internships, freelance projects, collaborations or just a hello.">
+  <section class="ct">
+    <div class="wrap">
+      <p class="label">Contact</p>
+      <h1 class="display ct__title">
+        <span class="split-line" data-split><span>Let's</span></span>
+        <span class="split-line" data-split style="--d:.1s"><span><span class="serif italic accent">talk.</span></span></span>
+      </h1>
+
+      <div class="ct__grid">
+        <form class="mad" data-form data-endpoint={endpoint} data-email={site.email} data-reveal style="--d:.2s">
+          <p class="mad__text">
+            Hi Farhan, my name is
+            <label class="mad__field"><span class="sr-only">Your name</span><input name="name" required placeholder="your name" autocomplete="name" size="10" /></label>
+            and I'd love to talk about
+            <label class="mad__field mad__field--select"><span class="sr-only">Topic</span>
+              <select name="topic">{topics.map((t) => <option>{t}</option>)}</select>
+            </label>.
+            You can reach me at
+            <label class="mad__field"><span class="sr-only">Your email</span><input name="email" type="email" required placeholder="your@email.com" autocomplete="email" size="14" /></label>.
+          </p>
+          <label class="mad__msg">
+            <span class="mono muted">Anything else? (optional)</span>
+            <textarea name="message" rows="4" placeholder="Tell me a little about it…"></textarea>
+          </label>
+          <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sr-only" aria-hidden="true" />
+          <div class="mad__foot">
+            <button type="submit" class="btn btn--solid" data-magnetic="0.25">
+              <span data-form-label>Send message</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <p class="mono muted mad__status" data-form-status role="status"></p>
+          </div>
+        </form>
+
+        <aside class="ct__aside" data-reveal style="--d:.3s">
+          <div class="ct__block">
+            <p class="mono muted">Email</p>
+            <button class="ct__email" data-copy={site.email} data-cursor="Copy"><span data-copy-label>{site.email}</span></button>
+            <a href={`mailto:${site.email}`} class="link mono muted ct__mailto">Open in mail app ↗</a>
+          </div>
+          <div class="ct__block">
+            <p class="mono muted">Socials</p>
+            <ul class="ct__socials">
+              {socials.map((s) => (
+                <li><a href={s.href} target="_blank" rel="noopener"><span>{s.label}</span><span class="mono muted">{s.handle}</span><span class="ct__arr">↗</span></a></li>
+              ))}
+            </ul>
+          </div>
+          <div class="ct__block ct__now">
+            <p class="mono muted">Right now in Colombo</p>
+            <p class="ct__clock" data-clock>--:--:--</p>
+            <p class="muted">{site.availability}. I usually reply within a day or two.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .ct { padding-top: 150px; padding-bottom: clamp(80px, 10vw, 140px); }
+  .ct__title { margin-top: 1.5rem; }
+  .ct__grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: clamp(2rem, 6vw, 6rem); margin-top: 4rem; align-items: start; }
+
+  .mad__text { font-size: clamp(1.6rem, 3.4vw, 2.9rem); line-height: 1.5; letter-spacing: -0.035em; }
+  .mad__field { display: inline-block; position: relative; }
+  .mad__field input, .mad__field select {
+    font: inherit; letter-spacing: inherit; color: var(--accent); background: none; border: 0; outline: 0;
+    border-bottom: 2px dashed var(--line-2); padding: 0 0.1em; max-width: 100%; transition: border-color 0.3s;
+    field-sizing: content; min-width: 4ch;
+  }
+  .mad__field input::placeholder { color: var(--muted); opacity: 0.6; }
+  .mad__field input:focus, .mad__field select:focus { border-bottom-color: var(--accent); border-bottom-style: solid; }
+  .mad__field select { appearance: none; cursor: pointer; padding-right: 0.8em; background: linear-gradient(45deg, transparent 50%, var(--accent) 50%) right 0.1em center / 0.35em 0.35em no-repeat; }
+  .mad__field select option { background: var(--bg-2); color: var(--fg); font-size: 1rem; }
+  .mad__msg { display: grid; gap: 0.6rem; margin-top: 2.5rem; }
+  .mad__msg textarea { font: inherit; color: var(--fg); background: var(--bg-2); border: 1px solid var(--line); border-radius: 14px; padding: 1rem 1.2rem; resize: vertical; outline: 0; transition: border-color 0.3s; }
+  .mad__msg textarea:focus { border-color: var(--accent); }
+  .mad__foot { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 2rem; }
+  .mad__status { font-size: 0.72rem; }
+  .mad__status.is-ok { color: var(--ok); }
+
+  .ct__aside { display: grid; gap: 1.2rem; }
+  .ct__block { padding: 1.6rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); display: grid; gap: 0.8rem; }
+  .ct__email { text-align: left; font-size: clamp(1.15rem, 1.8vw, 1.45rem); letter-spacing: -0.02em; word-break: break-all; transition: color 0.3s; }
+  .ct__email:hover { color: var(--accent); }
+  .ct__mailto { font-size: 0.68rem; justify-self: start; }
+  .ct__socials { list-style: none; padding: 0; margin: 0; }
+  .ct__socials a { display: grid; grid-template-columns: 1fr auto auto; gap: 1rem; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid var(--line); transition: padding 0.4s var(--ease), color 0.3s; }
+  .ct__socials li:last-child a { border-bottom: 0; }
+  .ct__socials a:hover { padding-left: 0.5rem; color: var(--accent); }
+  .ct__socials .mono { font-size: 0.66rem; }
+  .ct__arr { transition: transform 0.4s var(--ease); }
+  .ct__socials a:hover .ct__arr { transform: rotate(45deg); }
+  .ct__now { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .ct__now .muted { color: color-mix(in srgb, var(--accent-ink) 70%, transparent); }
+  .ct__clock { font-family: var(--f-mono); font-size: 2.6rem; letter-spacing: -0.04em; line-height: 1; }
+  @media (max-width: 900px) { .ct { padding-top: 120px; } .ct__grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  document.addEventListener('astro:page-load', () => {
+    const form = document.querySelector<HTMLFormElement>('[data-form]');
+    if (!form) return;
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const label = form.querySelector<HTMLElement>('[data-form-label]')!;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const d = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      if (d._gotcha) return;
+      const endpoint = form.dataset.endpoint;
+      if (!endpoint) {
+        const subject = `Hello from ${d.name} — ${d.topic}`;
+        const body = `Hi Farhan,\n\nMy name is ${d.name} and I'd love to talk about ${d.topic}.\n\n${d.message || ''}\n\n— ${d.name} (${d.email})`;
+        location.href = `mailto:${form.dataset.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        status.textContent = 'Opening your email app…';
+        return;
+      }
+      label.textContent = 'Sending…';
+      try {
+        const res = await fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(d) });
+        if (!res.ok) throw new Error(String(res.status));
+        form.reset();
+        status.textContent = 'Message sent — thank you! I\'ll be in touch soon.';
+        status.classList.add('is-ok');
+      } catch {
+        status.textContent = `Something went wrong. Email me directly at ${form.dataset.email}.`;
+      } finally {
+        label.textContent = 'Send message';
+      }
+    });
+  });
+</script>

@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProjectCover from './ProjectCover.astro';
+interface Props { project: CollectionEntry<'projects'>; index: number; variant?: 'wide' | 'grid' }
+const { project, index, variant = 'grid' } = Astro.props;
+const p = project.data;
+---
+
+<a href={`/projects/${project.id}`} class:list={['pc', `pc--${variant}`]} data-cursor="View" data-tilt="5" data-kind={p.kind} data-stack={p.stack.join('|')}>
+  <div class="pc__media">
+    <ProjectCover title={p.title} color={p.color} cover={p.cover} mark={p.mark} stack={p.stack} />
+    <div class="pc__shine"></div>
+  </div>
+  <div class="pc__meta">
+    <span class="mono muted">{String(index + 1).padStart(2, '0')}</span>
+    <div class="pc__text">
+      <h3 class="pc__title">{p.title}</h3>
+      <p class="pc__tag muted">{p.tagline}</p>
+    </div>
+    <span class="mono muted pc__year">{p.year}</span>
+  </div>
+  <ul class="pc__chips">{p.stack.slice(0, 4).map((s) => <li class="chip">{s}</li>)}</ul>
+</a>
+
+<style>
+  .pc { display: flex; flex-direction: column; gap: 1rem; perspective: 1000px; }
+  .pc__media { position: relative; aspect-ratio: 4 / 3; border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); transform: rotateX(var(--rx, 0)) rotateY(var(--ry, 0)); transform-style: preserve-3d; transition: transform 0.5s var(--ease); }
+  .pc--wide .pc__media { aspect-ratio: 16 / 11; }
+  .pc__shine { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(500px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.12), transparent 40%); opacity: 0; transition: opacity 0.4s; }
+  .pc:hover .pc__shine { opacity: 1; }
+  .pc__meta { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: baseline; padding-top: 0.2rem; }
+  .pc__title { font-size: clamp(1.4rem, 2.2vw, 1.9rem); letter-spacing: -0.035em; transition: color 0.3s; }
+  .pc:hover .pc__title { color: var(--accent); }
+  .pc__tag { font-size: 0.95rem; margin-top: 0.25rem; }
+  .pc__chips { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; padding: 0; margin: 0; }
+</style>

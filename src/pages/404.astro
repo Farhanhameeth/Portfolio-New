@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import ParticleField from '../components/ParticleField.astro';
+---
+
+<Base title="Lost" description="This page doesn't exist.">
+  <section class="nf">
+    <div class="nf__field"><ParticleField text="404" density={0.9} label="404" /></div>
+    <div class="wrap nf__text">
+      <p class="label">Error 404</p>
+      <h1 class="h2">This page wandered off. <span class="serif italic accent">Poke the dots</span> — or head home.</h1>
+      <div class="nf__cta">
+        <a href="/" class="btn btn--solid" data-magnetic="0.25">Back home</a>
+        <button class="btn" data-open-palette>Search the site <kbd>⌘K</kbd></button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { min-height: 100svh; display: grid; grid-template-rows: 1fr auto; padding-top: 90px; }
+  .nf__field { position: relative; min-height: 50vh; }
+  .nf__text { padding-bottom: 60px; display: grid; gap: 1.5rem; }
+  .nf__text .h2 { max-width: 20ch; }
+  .nf__cta { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+  kbd { font-family: var(--f-mono); font-size: 0.7rem; padding: 0.15rem 0.4rem; border: 1px solid var(--line); border-radius: 5px; }
+</style>

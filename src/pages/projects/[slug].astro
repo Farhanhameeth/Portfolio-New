@@ -1,0 +1,110 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProjectCover from '../../components/ProjectCover.astro';
+import { getProjects } from '../../lib/utils';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project, i) => ({
+    params: { slug: project.id },
+    props: { project, next: projects[(i + 1) % projects.length], index: i, total: projects.length },
+  }));
+}
+
+const { project, next, index, total } = Astro.props;
+const p = project.data;
+const { Content } = await render(project);
+---
+
+<Base title={p.title} description={p.summary} image={p.cover}>
+  <article class="pd" style={`--c:${p.color}`}>
+    <header class="wrap pd__head">
+      <a href="/projects" class="mono muted link pd__back">← All projects</a>
+      <p class="label">Project {String(index + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</p>
+      <h1 class="display pd__title">
+        <span class="split-line" data-split><span>{p.title}</span></span>
+      </h1>
+      <p class="lead pd__tagline" data-reveal style="--d:.2s"><span class="serif italic">{p.tagline}.</span> {p.summary}</p>
+
+      <dl class="pd__meta" data-reveal style="--d:.3s">
+        <div><dt class="mono muted">Year</dt><dd>{p.year}</dd></div>
+        <div><dt class="mono muted">Role</dt><dd>{p.role}</dd></div>
+        <div><dt class="mono muted">Type</dt><dd>{p.kind}</dd></div>
+        <div><dt class="mono muted">Status</dt><dd><span class:list={['pd__status', { 'is-live': p.status === 'In progress' }]}></span>{p.status}</dd></div>
+      </dl>
+
+      <div class="pd__links" data-reveal style="--d:.35s">
+        {p.live && <a href={p.live} target="_blank" rel="noopener" class="btn btn--solid" data-magnetic="0.25">Visit live site ↗</a>}
+        {p.repo && <a href={p.repo} target="_blank" rel="noopener" class="btn" data-magnetic="0.25">Source on GitHub ↗</a>}
+      </div>
+    </header>
+
+    <div class="wrap">
+      <div class="pd__cover" data-reveal>
+        <ProjectCover title={p.title} color={p.color} cover={p.cover} mark={p.mark} stack={p.stack} eager />
+      </div>
+    </div>
+
+    <div class="wrap pd__body">
+      <aside class="pd__aside">
+        <div>
+          <p class="mono muted">Stack</p>
+          <ul class="pd__stack">{p.stack.map((s) => <li class="chip">{s}</li>)}</ul>
+        </div>
+        {p.highlights.length > 0 && (
+          <div>
+            <p class="mono muted">Highlights</p>
+            <ul class="pd__hl">{p.highlights.map((h) => <li>{h}</li>)}</ul>
+          </div>
+        )}
+      </aside>
+      <div class="prose" data-reveal>
+        <Content />
+      </div>
+    </div>
+
+    <a href={`/projects/${next.id}`} class="pd__next" data-cursor="Next" style={`--nc:${next.data.color}`}>
+      <div class="wrap">
+        <p class="mono muted">Next project</p>
+        <p class="pd__next-title">{next.data.title} <span>→</span></p>
+      </div>
+    </a>
+  </article>
+</Base>
+
+<style>
+  .pd__head { padding-top: 140px; }
+  .pd__back { display: block; width: fit-content; margin-bottom: 2.5rem; font-size: 0.72rem; }
+  .pd__title { margin-top: 1.2rem; font-size: clamp(3rem, 9vw, 9rem); }
+  .pd__tagline { margin-top: 2rem; max-width: 62ch; }
+  .pd__tagline .serif { color: var(--c); font-size: 1.15em; }
+  .pd__meta { display: grid; grid-template-columns: repeat(4, 1fr); margin: 3rem 0 0; border-top: 1px solid var(--line); }
+  .pd__meta > div { padding: 1.2rem 1rem 1.2rem 0; border-bottom: 1px solid var(--line); }
+  .pd__meta dt { font-size: 0.66rem; margin-bottom: 0.3rem; }
+  .pd__meta dd { margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+  .pd__status { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
+  .pd__status.is-live { background: var(--ok); animation: pulse 2s infinite; }
+  .pd__links { display: flex; gap: 0.7rem; flex-wrap: wrap; margin-top: 2rem; }
+  .pd__cover { margin-top: 4rem; aspect-ratio: 16 / 9; border-radius: 24px; overflow: hidden; border: 1px solid var(--line); }
+  .pd__body { display: grid; grid-template-columns: 320px 1fr; gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(60px, 8vw, 120px); }
+  .pd__aside { position: sticky; top: 110px; align-self: start; display: grid; gap: 2.5rem; }
+  .pd__stack { list-style: none; padding: 0; margin: 0.8rem 0 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .pd__hl { list-style: none; padding: 0; margin: 0.8rem 0 0; display: grid; gap: 0.9rem; }
+  .pd__hl li { padding-left: 1.2rem; position: relative; color: var(--fg-2); font-size: 0.95rem; line-height: 1.5; }
+  .pd__hl li::before { content: ''; position: absolute; left: 0; top: 0.6em; width: 6px; height: 6px; border-radius: 50%; background: var(--c); }
+  .pd__next { display: block; border-top: 1px solid var(--line); padding-block: clamp(60px, 10vw, 140px); position: relative; overflow: hidden; isolation: isolate; }
+  .pd__next::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--nc); transform: translateY(100%); transition: transform 0.8s var(--ease); }
+  .pd__next:hover::before { transform: none; }
+  .pd__next:hover, .pd__next:hover .muted { color: #fff; }
+  .pd__next-title { font-size: clamp(2.5rem, 8vw, 7rem); letter-spacing: -0.05em; line-height: 1; margin-top: 1rem; }
+  .pd__next-title span { display: inline-block; transition: transform 0.6s var(--ease); }
+  .pd__next:hover .pd__next-title span { transform: translateX(20px); }
+  @media (max-width: 900px) {
+    .pd__head { padding-top: 110px; }
+    .pd__meta { grid-template-columns: 1fr 1fr; }
+    .pd__cover { aspect-ratio: 4 / 3; margin-top: 3rem; }
+    .pd__body { grid-template-columns: 1fr; }
+    .pd__aside { position: static; }
+  }
+</style>

@@ -1,0 +1,107 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getPosts, formatDate, readingTime, slugify } from '../../lib/utils';
+import { site } from '../../data/site';
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  return posts.map((post, i) => ({
+    params: { slug: post.id },
+    props: { post, newer: posts[i - 1], older: posts[i + 1] },
+  }));
+}
+
+const { post, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth === 2);
+const url = new URL(`/blog/${post.id}`, Astro.site).toString();
+---
+
+<Base title={post.data.title} description={post.data.description} image={post.data.cover} type="article">
+  <div class="progress" aria-hidden="true"><span data-progress></span></div>
+  <article class="post" data-article>
+    <header class="wrap post__head">
+      <a href="/blog" class="mono muted link">← All posts</a>
+      <div class="post__meta mono muted" data-reveal>
+        <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+        <span>·</span><span>{readingTime(post.body)} min read</span>
+        {post.data.updated && <><span>·</span><span>Updated {formatDate(post.data.updated)}</span></>}
+      </div>
+      <h1 class="post__title"><span class="split-line" data-split><span>{post.data.title}</span></span></h1>
+      <p class="lead" data-reveal style="--d:.15s">{post.data.description}</p>
+      <ul class="post__tags" data-reveal style="--d:.2s">
+        {post.data.tags.map((t) => <li><a href={`/blog/tags/${slugify(t)}`} class="chip">#{t}</a></li>)}
+      </ul>
+      {post.data.cover && <img class="post__cover" src={post.data.cover} alt="" data-reveal />}
+    </header>
+
+    <div class="wrap post__body">
+      <aside class="post__aside">
+        {toc.length > 1 && (
+          <nav aria-label="On this page">
+            <p class="mono muted">On this page</p>
+            <ol class="toc">{toc.map((h) => <li><a href={`#${h.slug}`} class="link">{h.text}</a></li>)}</ol>
+          </nav>
+        )}
+        <div>
+          <p class="mono muted">Share</p>
+          <div class="share">
+            <a class="chip" target="_blank" rel="noopener" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`}>LinkedIn ↗</a>
+            <a class="chip" target="_blank" rel="noopener" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(post.data.title)}`}>X ↗</a>
+            <button class="chip" data-copy={url}><span data-copy-label>Copy link</span></button>
+          </div>
+        </div>
+      </aside>
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    <footer class="wrap post__foot">
+      <div class="author">
+        <img src="/images/farhan.webp" alt="" width="64" height="64" loading="lazy" />
+        <div>
+          <p>Written by <strong>{site.name}</strong></p>
+          <p class="muted">{site.role} in {site.location}. <a href="/contact" class="link accent">Say hi →</a></p>
+        </div>
+      </div>
+      <nav class="pager" aria-label="More posts">
+        {older ? <a href={`/blog/${older.id}`} class="pager__a"><span class="mono muted">← Older</span><span>{older.data.title}</span></a> : <span></span>}
+        {newer && <a href={`/blog/${newer.id}`} class="pager__a pager__a--r"><span class="mono muted">Newer →</span><span>{newer.data.title}</span></a>}
+      </nav>
+    </footer>
+  </article>
+</Base>
+
+<style>
+  .progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 60; }
+  .progress span { display: block; height: 100%; background: var(--accent); transform-origin: left; transform: scaleX(0); }
+  .post__head { padding-top: 140px; max-width: 1100px; }
+  .post__meta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 3rem; font-size: 0.7rem; }
+  .post__title { font-size: clamp(2.6rem, 7vw, 6rem); letter-spacing: -0.05em; line-height: 0.98; margin: 1.2rem 0 1.8rem; }
+  .post__tags { list-style: none; padding: 0; margin: 1.6rem 0 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .post__tags a:hover { border-color: var(--accent); color: var(--accent); }
+  .post__cover { margin-top: 3rem; border-radius: 24px; width: 100%; border: 1px solid var(--line); }
+  .post__body { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: clamp(2rem, 6vw, 6rem); padding-block: clamp(60px, 7vw, 100px); }
+  .post__aside { position: sticky; top: 110px; align-self: start; display: grid; gap: 2.5rem; font-size: 0.92rem; }
+  .toc { list-style: none; padding: 0; margin: 0.8rem 0 0; display: grid; gap: 0.6rem; counter-reset: toc; }
+  .toc li { counter-increment: toc; display: flex; gap: 0.6rem; color: var(--fg-2); }
+  .toc li::before { content: counter(toc, decimal-leading-zero); font-family: var(--f-mono); font-size: 0.68rem; color: var(--muted); padding-top: 0.2rem; }
+  .share { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.8rem; }
+  .share .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .post__foot { padding-bottom: clamp(80px, 10vw, 140px); display: grid; gap: 3rem; }
+  .author { display: flex; gap: 1.2rem; align-items: center; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-2); }
+  .author img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; object-position: top; background: var(--accent); }
+  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .pager__a { display: grid; gap: 0.5rem; padding: 1.5rem; border: 1px solid var(--line); border-radius: var(--radius); font-size: 1.2rem; letter-spacing: -0.02em; transition: border-color 0.3s; }
+  .pager__a:hover { border-color: var(--accent); }
+  .pager__a--r { text-align: right; grid-column: 2; }
+  @media (max-width: 900px) {
+    .post__head { padding-top: 110px; }
+    .post__body { grid-template-columns: 1fr; }
+    .post__aside { position: static; order: 2; }
+    .pager { grid-template-columns: 1fr; }
+    .pager__a--r { grid-column: 1; }
+  }
+</style>

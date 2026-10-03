@@ -1,0 +1,43 @@
+---
+import type { Post } from '../lib/utils';
+import { formatDate, readingTime } from '../lib/utils';
+interface Props { posts: Post[] }
+const { posts } = Astro.props;
+---
+
+<ul class="pl" data-post-list>
+  {posts.map((p, i) => (
+    <li class="pl__item" data-reveal style={`--d:${Math.min(i, 6) * 0.05}s`} data-search={`${p.data.title} ${p.data.description} ${p.data.tags.join(' ')}`.toLowerCase()} data-tags={p.data.tags.join('|')}>
+      <a href={`/blog/${p.id}`} class="pl__row" data-cursor="Read">
+        <time class="mono muted" datetime={p.data.date.toISOString()}>{formatDate(p.data.date, 'short')}</time>
+        <div class="pl__main">
+          <h2 class="pl__title">{p.data.title}{p.data.draft && <span class="chip pl__draft">Draft</span>}</h2>
+          <p class="muted pl__desc">{p.data.description}</p>
+          <ul class="pl__tags">{p.data.tags.map((t) => <li class="mono">#{t}</li>)}</ul>
+        </div>
+        <span class="mono muted">{readingTime(p.body)} min read</span>
+        <span class="pl__arrow" aria-hidden="true">→</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .pl { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
+  .pl__item.is-hidden { display: none; }
+  .pl__row { position: relative; display: grid; grid-template-columns: 140px 1fr auto auto; gap: 2rem; align-items: start; padding: 2.2rem 0; border-bottom: 1px solid var(--line); isolation: isolate; }
+  .pl__row::before { content: ''; position: absolute; inset: 0 calc(var(--gutter) * -1); z-index: -1; background: var(--bg-2); opacity: 0; transition: opacity 0.4s var(--ease); }
+  .pl__row:hover::before { opacity: 1; }
+  .pl__title { font-size: clamp(1.5rem, 3vw, 2.5rem); letter-spacing: -0.04em; line-height: 1.08; transition: color 0.3s; display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; }
+  .pl__row:hover .pl__title { color: var(--accent); }
+  .pl__draft { font-size: 0.6rem; }
+  .pl__desc { margin-top: 0.6rem; max-width: 60ch; }
+  .pl__tags { list-style: none; padding: 0; margin: 0.9rem 0 0; display: flex; gap: 0.8rem; color: var(--muted); font-size: 0.68rem; }
+  .pl__arrow { font-size: 1.5rem; transition: transform 0.5s var(--ease); }
+  .pl__row:hover .pl__arrow { transform: translateX(6px) rotate(-45deg); color: var(--accent); }
+  @media (max-width: 700px) {
+    .pl__row { grid-template-columns: 1fr auto; gap: 0.6rem 1rem; }
+    .pl__main { grid-column: 1 / -1; grid-row: 2; }
+    .pl__arrow { display: none; }
+  }
+</style>
