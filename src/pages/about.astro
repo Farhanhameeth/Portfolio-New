@@ -145,7 +145,13 @@ const certCount = certifications.length + ml.courses.length;
       <div class="certs">
         <div class="certs__col" data-reveal>
           <p class="certs__issuer"><span class="mono muted">Issuer</span>University of Moratuwa</p>
-          <ul>{uom.map((c) => <li><span class="accent">✦</span>{c.name}</li>)}</ul>
+          <ul>{uom.map((c) => (
+            <li>
+              <span class="accent">✦</span>
+              <span class="certs__name">{c.name}{c.date && <span class="mono muted certs__date">{c.date}</span>}</span>
+              {c.url && <a href={c.url} target="_blank" rel="noopener" class="certs__link mono" aria-label={`Verify ${c.name} certificate`}>Verify ↗</a>}
+            </li>
+          ))}</ul>
         </div>
         <div class="certs__col" data-reveal style="--d:.1s">
           <p class="certs__issuer"><span class="mono muted">Issuer</span>HackerRank</p>
@@ -262,6 +268,10 @@ const certCount = certifications.length + ml.courses.length;
   .certs li { display: flex; gap: 0.8rem; padding: 0.65rem 0; border-bottom: 1px dashed var(--line); transition: transform 0.4s var(--ease), color 0.3s; }
   .certs li:hover { transform: translateX(8px); color: var(--accent); }
   .certs li:last-child { border-bottom: 0; }
+  .certs__name { flex: 1; }
+  .certs__date { margin-left: 0.6rem; font-size: 0.66rem; }
+  .certs__link { flex: none; align-self: center; font-size: 0.64rem; padding: 0.22rem 0.6rem; border-radius: 999px; border: 1px solid var(--line-2); color: var(--fg-2); transition: border-color 0.3s, color 0.3s; }
+  .certs__link:hover { border-color: var(--accent); color: var(--accent); }
   @media (max-width: 800px) { .certs { grid-template-columns: 1fr; } .certs__col { padding: 1.4rem; } }
 
   /* Beyond */

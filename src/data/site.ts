@@ -149,13 +149,14 @@ export const mlSpecialization = {
   ],
 };
 
-export const certifications = [
-  { name: 'Python for Beginners', issuer: 'University of Moratuwa' },
-  { name: 'Python Programming', issuer: 'University of Moratuwa' },
+// `url` is the certificate's own verification link (from its QR code / Coursera verify page).
+export const certifications: { name: string; issuer: string; date?: string; url?: string }[] = [
+  { name: 'Python for Beginners', issuer: 'University of Moratuwa', date: 'Mar 2023', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=4776&code=eTgj0cLwLu&qrcode=1' },
+  { name: 'Python Programming', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=39990&code=A9xetXGL45&qrcode=1' },
   { name: 'Web Design for Beginners', issuer: 'University of Moratuwa' },
-  { name: 'Front-End Web Development', issuer: 'University of Moratuwa' },
-  { name: 'Server-side Web Programming', issuer: 'University of Moratuwa' },
-  { name: 'Professional Practice in Software Development', issuer: 'University of Moratuwa' },
+  { name: 'Front-End Web Development', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/mod/customcert/verify_certificate.php?contextid=40022&code=ey5iopZZ7J&qrcode=1' },
+  { name: 'Server-side Web Programming', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/lms/mod/customcert/verify_certificate.php?contextid=75742&code=OulbTjGHml&qrcode=1' },
+  { name: 'Professional Practice in Software Development', issuer: 'University of Moratuwa', url: 'https://open.uom.lk/lms/mod/customcert/verify_certificate.php?contextid=100190&code=VwPBv8sr40&qrcode=1' },
   { name: 'Java (Basic)', issuer: 'HackerRank' },
   { name: 'Java (Advanced)', issuer: 'HackerRank' },
   { name: 'SQL (Basic)', issuer: 'HackerRank' },
