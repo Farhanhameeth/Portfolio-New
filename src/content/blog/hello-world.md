@@ -23,7 +23,7 @@ Things I'm learning as a software engineer at Innovation Quotient and a final-ye
 
 1. Lessons from building production systems with **.NET Core**, **React**, **Next.js** and **Azure**
 2. Clean architecture, domain-driven design and what they look like in real code
-3. Machine learning and multimodal AI — what I'm learning and researching
+3. Machine learning and explainable AI — including progress on HelioGuard, my solar-flare forecasting research
 4. Project breakdowns — what worked, what didn't, what I'd do differently
 
 ## Psst

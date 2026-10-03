@@ -41,7 +41,7 @@ export const heroVerbs = [
   'health-tech platforms',
   'streaming experiences',
   'cloud-ready systems on Azure',
-  'AI-powered products',
+  'explainable ML systems',
 ];
 
 export const stack = [
@@ -64,6 +64,9 @@ export const skills: { name: string; group: SkillGroup }[] = [
   { name: 'JavaScript', group: 'Frontend' },
   { name: 'Tailwind', group: 'Frontend' },
   { name: 'Flutter', group: 'Frontend' },
+  { name: 'PyTorch', group: 'Data & AI' },
+  { name: 'SHAP', group: 'Data & AI' },
+  { name: 'FastAPI', group: 'Backend' },
   { name: 'MSSQL', group: 'Data & AI' },
   { name: 'PostgreSQL', group: 'Data & AI' },
   { name: 'MySQL', group: 'Data & AI' },
@@ -78,7 +81,7 @@ export const skills: { name: string; group: SkillGroup }[] = [
   { name: 'Git', group: 'Cloud & Tools' },
 ];
 
-export const concepts = ['Clean Architecture', 'Domain-Driven Design', 'RESTful APIs', 'System design', 'Agile', 'Multimodal AI'];
+export const concepts = ['Clean Architecture', 'Domain-Driven Design', 'RESTful APIs', 'System design', 'Agile', 'Explainable AI (XAI)', 'Imbalanced learning'];
 
 // Work history, newest first.
 export const experience = [
@@ -166,13 +169,13 @@ export const timeline = [
   { year: '2023', title: 'Started Computer Science at IIT', body: 'BSc (Hons) at the Informatics Institute of Technology, affiliated with the University of Westminster.' },
   { year: '2024', title: 'Shipped my first systems', body: 'Library and Inventory Management Systems in Java, JavaFX and MySQL — where OOP and layered architecture finally clicked. Six University of Moratuwa certificates and five HackerRank badges along the way.' },
   { year: '2025', title: 'Software Engineer Intern at Innovation Quotient', body: 'Joined IQ in May. Secure APIs, database design and React front-ends for client projects — including an HR information system.' },
-  { year: '2026', title: 'Associate Software Engineer', body: 'Promoted in January. Now building health-tech, OTT streaming and logistics platforms with .NET Core, React, Next.js and Azure — while finishing my final year and researching multimodal AI for communication coaching.' },
+  { year: '2026', title: 'Associate Software Engineer', body: 'Promoted in January. Now building health-tech, OTT streaming and logistics platforms with .NET Core, React, Next.js and Azure — while building HelioGuard, my final-year research project on explainable solar-flare forecasting. Also revamping the HDO website as a freelance project.' },
 ];
 
 export const facts = [
   { k: 'Currently', v: 'Associate Software Engineer @ Innovation Quotient' },
   { k: 'Studying', v: 'Final-year BSc (Hons) CS — IIT / Westminster' },
-  { k: 'Researching', v: 'Multimodal AI for communication coaching' },
+  { k: 'Researching', v: 'HelioGuard — explainable solar-flare forecasting' },
   { k: 'Speaks', v: 'English, Sinhala & Malay' },
   { k: 'Based in', v: 'Colombo, Sri Lanka (UTC+5:30)' },
 ];
