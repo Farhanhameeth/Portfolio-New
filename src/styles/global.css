@@ -142,8 +142,9 @@ p { margin: 0; }
 /* ───────────── Reveal on scroll ───────────── */
 [data-reveal] { opacity: 0; transform: translateY(40px); transition: opacity 1s var(--ease), transform 1.1s var(--ease); transition-delay: var(--d, 0s); }
 [data-reveal].is-in { opacity: 1; transform: none; }
-.split-line { display: block; overflow: hidden; padding-bottom: 0.06em; }
-.split-line > span { display: inline-block; transform: translateY(105%); transition: transform 1.2s var(--ease); transition-delay: var(--d, 0s); }
+/* Extra bottom padding (cancelled by the negative margin) keeps descenders such as g, y, p inside the reveal mask. */
+.split-line { display: block; overflow: hidden; padding-bottom: 0.22em; margin-bottom: -0.16em; }
+.split-line > span { display: inline-block; transform: translateY(130%); transition: transform 1.2s var(--ease); transition-delay: var(--d, 0s); }
 .is-in .split-line > span, .split-line.is-in > span { transform: none; }
 
 /* ───────────── Grain overlay ───────────── */
