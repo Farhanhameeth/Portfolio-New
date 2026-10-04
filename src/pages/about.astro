@@ -218,8 +218,9 @@ const certCount = certifications.length + ml.courses.length;
 
   /* Timeline */
   .tl__grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: clamp(2rem, 6vw, 6rem); }
-  .tl__aside { position: sticky; top: 110px; align-self: start; display: grid; gap: 1.5rem; }
-  .tl__year { font-size: clamp(6rem, 17vw, 16rem); line-height: 0.8; letter-spacing: -0.07em; font-weight: 500; overflow: hidden; }
+  .tl__aside { position: sticky; top: 110px; align-self: start; display: grid; gap: 1.5rem; container-type: inline-size; }
+  /* Sized from the column (cqi), not the viewport, so a four-digit year always fits. */
+  .tl__year { font-size: min(16rem, 40cqi); line-height: 0.8; letter-spacing: -0.07em; font-weight: 500; overflow: hidden; }
   .tl__year span { display: inline-block; transition: transform 0.5s var(--ease), opacity 0.5s; }
   .tl__year span.is-swap { transform: translateY(-30%); opacity: 0; }
   .tl__rail { height: 2px; background: var(--line); position: relative; }
